@@ -1,0 +1,58 @@
+version: '3.9'
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: ./deploy/Dockerfile
+      target: prod
+    image: data_faker:${DATA_FAKER_VERSION:-latest}
+    restart: always
+    env_file:
+    - .env
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATA_FAKER_HOST: 0.0.0.0
+      DATA_FAKER_DB_HOST: data_faker-db
+      DATA_FAKER_DB_PORT: 5432
+      DATA_FAKER_DB_USER: data_faker
+      DATA_FAKER_DB_PASS: data_faker
+      DATA_FAKER_DB_BASE: data_faker
+
+  db:
+    image: postgres:13.8-bullseye
+    hostname: data_faker-db
+    environment:
+      POSTGRES_PASSWORD: "data_faker"
+      POSTGRES_USER: "data_faker"
+      POSTGRES_DB: "data_faker"
+    volumes:
+    - data_faker-db-data:/var/lib/postgresql/data
+    restart: always
+    healthcheck:
+      test: pg_isready -U data_faker
+      interval: 2s
+      timeout: 3s
+      retries: 40
+
+  migrator:
+    image: data_faker:${DATA_FAKER_VERSION:-latest}
+    restart: "no"
+    command: alembic upgrade head
+    environment:
+      DATA_FAKER_DB_HOST: data_faker-db
+      DATA_FAKER_DB_PORT: 5432
+      DATA_FAKER_DB_USER: data_faker
+      DATA_FAKER_DB_PASS: data_faker
+      DATA_FAKER_DB_BASE: data_faker
+    depends_on:
+      db:
+        condition: service_healthy
+
+
+
+volumes:
+  data_faker-db-data:
+    name: data_faker-db-data
