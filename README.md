@@ -81,7 +81,7 @@ in `data_faker.settings.Settings.Config`.
 An example of .env file:
 ```bash
 DATA_FAKER_RELOAD="True"
-DATA_FAKER_PORT="8000"
+DATA_FAKER_PORT="8001"
 DATA_FAKER_ENVIRONMENT="dev"
 ```
 

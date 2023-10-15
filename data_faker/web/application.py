@@ -9,6 +9,8 @@ from data_faker.logging import configure_logging
 from data_faker.web.api.router import api_router
 from data_faker.web.lifetime import register_shutdown_event, register_startup_event
 
+from data_faker import constants
+
 APP_ROOT = Path(__file__).parent.parent
 
 
@@ -24,9 +26,9 @@ def get_app() -> FastAPI:
     app = FastAPI(
         title="data_faker",
         version=metadata.version("data_faker"),
-        docs_url=None,
-        redoc_url=None,
-        openapi_url="/api/openapi.json",
+        openapi_url=f"{constants.API_PREFIX}/openapi.json",
+        docs_url=f"{constants.API_PREFIX}/docs",
+        redoc_url=f"{constants.API_PREFIX}/redoc",
         default_response_class=UJSONResponse,
     )
 

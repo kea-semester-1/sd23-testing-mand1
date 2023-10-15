@@ -1,5 +1,3 @@
-from typing import List
-
 from fastapi import APIRouter
 from fastapi.param_functions import Depends
 
@@ -10,12 +8,12 @@ from data_faker.web.api.dummy.schema import DummyModelDTO, DummyModelInputDTO
 router = APIRouter()
 
 
-@router.get("/", response_model=List[DummyModelDTO])
+@router.get("/", response_model=list[DummyModelDTO])
 async def get_dummy_models(
     limit: int = 10,
     offset: int = 0,
     dummy_dao: DummyDAO = Depends(),
-) -> List[DummyModel]:
+) -> list[DummyModel]:
     """
     Retrieve all dummy objects from the database.
 

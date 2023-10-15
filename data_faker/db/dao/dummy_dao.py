@@ -1,5 +1,3 @@
-from typing import List, Optional
-
 from fastapi import Depends
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -22,7 +20,7 @@ class DummyDAO:
         """
         self.session.add(DummyModel(name=name))
 
-    async def get_all_dummies(self, limit: int, offset: int) -> List[DummyModel]:
+    async def get_all_dummies(self, limit: int, offset: int) -> list[DummyModel]:
         """
         Get all dummy models with limit/offset pagination.
 
@@ -38,8 +36,8 @@ class DummyDAO:
 
     async def filter(
         self,
-        name: Optional[str] = None,
-    ) -> List[DummyModel]:
+        name: str | None = None,
+    ) -> list[DummyModel]:
         """
         Get specific dummy model.
 

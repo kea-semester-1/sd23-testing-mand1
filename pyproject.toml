@@ -2,12 +2,8 @@
 name = "data_faker"
 version = "0.1.0"
 description = ""
-authors = [
-
-]
-maintainers = [
-
-]
+authors = []
+maintainers = []
 readme = "README.md"
 
 [tool.poetry.dependencies]
@@ -18,12 +14,14 @@ pydantic = "^2"
 pydantic-settings = "^2"
 yarl = "^1.9.2"
 ujson = "^5.8.0"
-SQLAlchemy = {version = "^2.0.18", extras = ["asyncio"]}
+SQLAlchemy = { version = "^2.0.18", extras = ["asyncio"] }
 alembic = "^1.11.1"
-asyncpg = {version = "^0.28.0", extras = ["sa"]}
+asyncpg = { version = "^0.28.0", extras = ["sa"] }
 aiofiles = "^23.1.0"
 httptools = "^0.6.0"
 loguru = "^0.7.0"
+ruff = "^0.0.292"
+mypy = "^1.6.0"
 
 
 [tool.poetry.dev-dependencies]
@@ -43,7 +41,7 @@ httpx = "^0.23.3"
 [tool.isort]
 profile = "black"
 multi_line_output = 3
-src_paths = ["data_faker",]
+src_paths = ["data_faker"]
 
 [tool.mypy]
 strict = true
@@ -64,10 +62,7 @@ filterwarnings = [
     "ignore::DeprecationWarning",
     "ignore:.*unclosed.*:ResourceWarning",
 ]
-env = [
-    "DATA_FAKER_ENVIRONMENT=pytest",
-    "DATA_FAKER_DB_BASE=data_faker_test",
-]
+env = ["DATA_FAKER_ENVIRONMENT=pytest", "DATA_FAKER_DB_BASE=data_faker_test"]
 
 [fastapi-template.options]
 project_name = "data_faker"
@@ -95,3 +90,107 @@ pydanticv1 = "{'type': 'bool'}"
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+
+[tool.ruff]
+select = [
+    "A",    # prevent using keywords that clobber python builtins
+    "B",    # bugbear: security warnings
+    "E",    # pycodestyle
+    "F",    # pyflakes
+    "ISC",  # implicit string concatenation
+    "UP",   # alert you when better syntax is available in your python version
+    "D101", # class docstring conventions
+    "D103", # function docstring conventions
+    "D400", # first line should end with a period
+]
+target-version = "py311"
+ignore = ["A003", "B008", "B905"]
+
+# Allow autofix for all enabled rules (when `--fix`) is provided.
+fixable = [
+    "A",
+    "B",
+    "C",
+    "D",
+    "E",
+    "F",
+    "G",
+    "I",
+    "N",
+    "Q",
+    "S",
+    "T",
+    "W",
+    "ANN",
+    "ARG",
+    "BLE",
+    "COM",
+    "DJ",
+    "DTZ",
+    "EM",
+    "ERA",
+    "EXE",
+    "FBT",
+    "ICN",
+    "INP",
+    "ISC",
+    "NPY",
+    "PD",
+    "PGH",
+    "PIE",
+    "PL",
+    "PT",
+    "PTH",
+    "PYI",
+    "RET",
+    "RSE",
+    "RUF",
+    "SIM",
+    "SLF",
+    "TCH",
+    "TID",
+    "TRY",
+    "UP",
+    "YTT",
+]
+unfixable = []
+
+exclude = [
+    ".bzr",
+    ".direnv",
+    ".eggs",
+    ".git",
+    ".git-rewrite",
+    ".hg",
+    ".mypy_cache",
+    ".nox",
+    ".pants.d",
+    ".pytype",
+    ".ruff_cache",
+    ".svn",
+    ".tox",
+    ".venv",
+    "__pypackages__",
+    "_build",
+    "buck-out",
+    "build",
+    "dist",
+    "node_modules",
+    "venv",
+    "settings.py",
+    "migrations",
+    "__init__.py",
+
+] # Exclude a variety of commonly ignored directories.
+
+# Same as Black.
+line-length = 88
+
+# Allow unused variables when underscore-prefixed.
+dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+
+
+[tool.ruff.mccabe]
+# Unlike Flake8, default to a complexity level of 10.
+max-complexity = 10

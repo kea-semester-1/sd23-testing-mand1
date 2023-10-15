@@ -1,4 +1,5 @@
-from typing import Any, AsyncGenerator
+from typing import Any
+from collections.abc import AsyncGenerator
 
 import pytest
 from fastapi import FastAPI
