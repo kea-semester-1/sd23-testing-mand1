@@ -1,6 +1,6 @@
 # data_faker
 
-This project was generated using fastapi_template.
+This project is the first mandatory assignment, for the SD23 testing subject.
 
 ## Commands
 
