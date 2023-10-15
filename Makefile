@@ -10,4 +10,4 @@ run: ## Run the application
 
 test: ## Run tests
 	@echo "Running tests..."
-	docker container exec $$(docker ps | grep api-1 | awk '{print $$1}') pytest ./rpg_api/tests
+	docker container exec $$(docker ps | grep api-1 | awk '{print $$1}') pytest ./data_faker/tests
