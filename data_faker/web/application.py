@@ -3,7 +3,6 @@ from pathlib import Path
 
 from fastapi import FastAPI
 from fastapi.responses import UJSONResponse
-from fastapi.staticfiles import StaticFiles
 
 from data_faker.logging import configure_logging
 from data_faker.web.api.router import api_router
