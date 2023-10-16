@@ -5,6 +5,8 @@ from data_faker.db.dependencies import get_db_session
 from data_faker.db.models.models import User, Address
 import sqlalchemy as sa
 from datetime import datetime
+from typing import Any
+import factory 
 
 
 class UserDAO:
@@ -23,6 +25,7 @@ class UserDAO:
             town="København",
             postal_code=2,
         )
+
         user = User(
             first_name="Malthe",
             last_name="Gram",
