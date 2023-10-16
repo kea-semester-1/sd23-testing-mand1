@@ -27,7 +27,11 @@ class UserFactory(factory.Factory):
         model = User
 
     gender = factory.LazyAttribute(lambda x: random.choice(["male", "female"]))
-    first_name = factory.LazyAttribute(lambda x: str(fake.first_name()))
+    first_name = factory.LazyAttribute(
+        lambda o: fake.first_name_male()
+        if o.gender == "male"
+        else fake.first_name_female()
+    )
     last_name = factory.LazyAttribute(lambda x: fake.last_name())
     cpr = factory.LazyAttribute(lambda x: fake.ssn())
     date_of_birth = factory.LazyAttribute(lambda x: fake.date_of_birth())
