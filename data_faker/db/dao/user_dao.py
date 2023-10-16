@@ -16,25 +16,7 @@ class UserDAO:
     async def create(self) -> None:  # TODO: Return id
         """Create function for User DAO."""
         address = AddressFactory()
-        # address = Address(
-        #     street="Gade",
-        #     number="26",
-        #     floor="5",
-        #     door="3",
-        #     town="København",
-        #     postal_code=2,
-        # )
-
         user = UserFactory()
-        # user = User(
-        #     first_name="Malthe",
-        #     last_name="Gram",
-        #     gender="male",
-        #     cpr="22222222",
-        #     date_of_birth=datetime.now(),
-        #     address=address,
-        #     phone_number="22222",
-        # )
 
         self.session.add(address)
         await self.session.commit()

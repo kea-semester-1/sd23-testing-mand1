@@ -39,13 +39,6 @@ class UserFactory(factory.Factory):
     address = factory.SubFactory(AddressFactory)
 
 
-# Testing
-bla1 = UserFactory()
-bla2 = AddressFactory()
-print(bla1.address.__dict__)
-print(bla2.__dict__)
-
-
 wow = [
     "__annotations__",
     "__class__",
