@@ -1,36 +1,65 @@
 import factory
 from faker import Faker
-from data_faker.db.models.models import User, Address
 import random
+from typing import Any, Generic, TypeVar
+from pydantic import BaseModel
+from loguru import logger
+from data_faker.web.dtos.address_dto import AddressDTO
+from data_faker.web.dtos.fake_info_dto import FakeInfoDTO
+
 
 fake = Faker("da_Dk")
+TModel = TypeVar("TModel", bound=BaseModel)
 
 
+# TODO: Probably move all helper functions to a separate file
 def _generate_phone_number() -> str:
     """Generates a random unique phone number."""
     phone_number = "".join(str(random.randint(2, 7)) for _ in range(8))
     return f"+45{phone_number}"
 
 
-class AddressFactory(factory.Factory):
+class BaseFactory(Generic[TModel], factory.Factory):
+    """
+    Base factory.
+
+    Overrides the default create and create_batch methods from Factory, to return
+    instances of the associated model, for improved type hinting/auto-completion.
+    """
+
+    class Meta:
+        abstract = True
+
+    @classmethod
+    def create(cls, **kwargs: Any) -> TModel:
+        """Create an instance of the associated model."""
+        return cls._generate("create", kwargs)
+
+    @classmethod
+    def create_batch(cls, size: int, **kwargs: Any) -> list[TModel]:
+        """Create a batch of instances of the associated model."""
+        return [cls._generate("create", kwargs) for _ in range(size)]
+
+
+class AddressFactory(BaseFactory[AddressDTO]):
     """Address factory."""
 
     class Meta:
-        model = Address
+        model = AddressDTO
 
-    street = factory.LazyAttribute(lambda x: str(fake.street_name())) # Malthe
-    number = factory.LazyAttribute(lambda x: str(fake.building_number())) #Martin
-    door = factory.LazyAttribute(lambda x: str(fake.building_number()))# Mo
-    floor = factory.LazyAttribute(lambda x: str(random.randint(1, 20)))# Malthe
-    town = factory.LazyAttribute(lambda x: str(fake.city_name())) # Mo
-    postal_code = factory.LazyAttribute(lambda x: int(fake.postcode())) # Mo
+    street = factory.LazyAttribute(lambda x: str(fake.street_name()))  # Malthe
+    number = factory.LazyAttribute(lambda x: str(fake.building_number()))  # Martin
+    door = factory.LazyAttribute(lambda x: str(fake.building_number()))  # Mo
+    floor = factory.LazyAttribute(lambda x: str(random.randint(1, 20)))  # Malthe
+    town = factory.LazyAttribute(lambda x: str(fake.city_name()))  # Mo
+    postal_code = factory.LazyAttribute(lambda x: int(fake.postcode()))  # Mo
 
 
-class FakeInfoFactory(factory.Factory):
+class FakeInfoFactory(BaseFactory[FakeInfoDTO]):
     """User factory."""
 
     class Meta:
-        model = User
+        model = FakeInfoDTO
 
     gender = factory.LazyAttribute(
         lambda x: random.choice(["male", "female"])
@@ -43,8 +72,8 @@ class FakeInfoFactory(factory.Factory):
     last_name = factory.LazyAttribute(lambda x: fake.last_name())  # Malthe
     cpr = factory.LazyAttribute(lambda x: fake.ssn())  # Martin
     date_of_birth = factory.LazyAttribute(lambda x: fake.date_of_birth())  # Martin
-    phone_number = _generate_phone_number()  # Mo
-    address = factory.SubFactory(AddressFactory)# Martin
+    phone_number = factory.LazyAttribute(lambda x: _generate_phone_number())  # Mo
+    address = factory.SubFactory(AddressFactory)  # Martin
 
 
 wow = [
