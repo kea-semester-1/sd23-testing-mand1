@@ -2,9 +2,9 @@ from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from data_faker.db.dependencies import get_db_session
-from data_faker.db.models.models import User, Address
+from data_faker.db.models.models import User
 import sqlalchemy as sa
-from data_faker.db.factories import FakeInfoFactory, AddressFactory
+from data_faker.db.factories import FakeInfoFactory
 
 
 class UserDAO:
@@ -17,7 +17,7 @@ class UserDAO:
         """Create function for User DAO."""
 
         user = FakeInfoFactory()
-        
+
         self.session.add(user)
         await self.session.commit()
 
