@@ -15,15 +15,12 @@ def _generate_phone_number() -> str:
 class AddressFactory(factory.Factory):
     """Address factory."""
 
-    class Meta:
-        model = Address
-
-    street = factory.LazyAttribute(lambda x: str(fake.street_name())) # Malthe
-    number = factory.LazyAttribute(lambda x: str(fake.building_number())) #Martin
-    door = factory.LazyAttribute(lambda x: str(fake.building_number()))# Mo
-    floor = factory.LazyAttribute(lambda x: str(random.randint(1, 20)))# Malthe
-    town = factory.LazyAttribute(lambda x: str(fake.city_name())) # Mo
-    postal_code = factory.LazyAttribute(lambda x: int(fake.postcode())) # Mo
+    street = factory.LazyAttribute(lambda x: str(fake.street_name()))  # Malthe
+    number = factory.LazyAttribute(lambda x: str(fake.building_number()))  # Martin
+    door = factory.LazyAttribute(lambda x: str(fake.building_number()))  # Mo
+    floor = factory.LazyAttribute(lambda x: str(random.randint(1, 20)))  # Malthe
+    town = factory.LazyAttribute(lambda x: str(fake.city_name()))  # Mo
+    postal_code = factory.LazyAttribute(lambda x: int(fake.postcode()))  # Mo
 
 
 class FakeInfoFactory(factory.Factory):
@@ -44,7 +41,7 @@ class FakeInfoFactory(factory.Factory):
     cpr = factory.LazyAttribute(lambda x: fake.ssn())  # Martin
     date_of_birth = factory.LazyAttribute(lambda x: fake.date_of_birth())  # Martin
     phone_number = _generate_phone_number()  # Mo
-    address = factory.SubFactory(AddressFactory)# Martin
+    # address = factory.SubFactory(AddressFactory)  # Martin
 
 
 wow = [

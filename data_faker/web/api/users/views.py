@@ -10,12 +10,6 @@ async def get_users(dao: UserDAO = Depends()):
     return await dao.get_all()
 
 
-@router.get("/address")
-async def get_users_with_address(dao: UserDAO = Depends()):
-    """Get all users."""
-    return await dao.get_all_with_address()
-
-
 @router.post("")
 async def create(
     dao: UserDAO = Depends(),

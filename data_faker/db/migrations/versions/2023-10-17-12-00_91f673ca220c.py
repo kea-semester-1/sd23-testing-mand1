@@ -7,6 +7,7 @@ Create Date: 2023-10-17 12:00:38.520641
 """
 import sqlalchemy as sa
 from alembic import op
+import sqlparse
 
 # revision identifiers, used by Alembic.
 revision = "91f673ca220c"
@@ -23,6 +24,14 @@ def upgrade() -> None:
     op.drop_column("address", "door")
     op.drop_constraint("user_address_id_fkey", "user", type_="foreignkey")
     op.drop_column("user", "address_id")
+    # ### end Alembic commands ###
+    with open("./input_files/addresses.sql", "r") as f:
+        sql_commands = f.read()
+
+    # Using sqlparse to split the commands
+    for cmd in sqlparse.split(sql_commands):
+        if cmd.strip():  # ensuring no empty command is executed
+            op.execute(cmd)
     # ### end Alembic commands ###
 
 
