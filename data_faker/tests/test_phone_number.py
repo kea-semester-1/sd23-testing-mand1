@@ -109,7 +109,7 @@ def test_valid_phone_numbers_lower_boundary(prefix: list[str]) -> None:
 
 @pytest.mark.parametrize("prefix", valid_prefixes)
 def test_valid_phone_numbers_upper_boundary(prefix: str) -> None:
-    """Test a valid phone number for lower boundary partition."""
+    """Test a valid phone number for upper boundary partition."""
     number = prefix + "9" * (8 - len(prefix))
     print(number)
     assert is_valid_phone_number(number)
