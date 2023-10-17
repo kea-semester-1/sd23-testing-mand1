@@ -6,6 +6,12 @@ import random
 fake = Faker("da_Dk")
 
 
+def _generate_phone_number() -> str:
+    """Generates a random unique phone number."""
+    phone_number = "".join(str(random.randint(2, 7)) for _ in range(8))
+    return f"+45{phone_number}"
+
+
 class AddressFactory(factory.Factory):
     """Address factory."""
 
@@ -35,7 +41,7 @@ class UserFactory(factory.Factory):
     last_name = factory.LazyAttribute(lambda x: fake.last_name())
     cpr = factory.LazyAttribute(lambda x: fake.ssn())
     date_of_birth = factory.LazyAttribute(lambda x: fake.date_of_birth())
-    phone_number = factory.LazyAttribute(lambda x: fake.phone_number())
+    phone_number = _generate_phone_number()
     address = factory.SubFactory(AddressFactory)
 
 
