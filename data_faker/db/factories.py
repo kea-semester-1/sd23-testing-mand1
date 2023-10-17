@@ -3,9 +3,10 @@ from faker import Faker
 import random
 from typing import Any, Generic, TypeVar
 from pydantic import BaseModel
-from loguru import logger
 from data_faker.web.dtos.address_dto import AddressDTO
 from data_faker.web.dtos.fake_info_dto import FakeInfoDTO
+from data_faker.db.enums import Gender
+from data_faker import martin
 
 
 fake = Faker("da_Dk")
@@ -61,17 +62,17 @@ class FakeInfoFactory(BaseFactory[FakeInfoDTO]):
     class Meta:
         model = FakeInfoDTO
 
-    gender = factory.LazyAttribute(
-        lambda x: random.choice(["male", "female"])
-    )  # Malthe
+    gender = factory.LazyAttribute(lambda x: random.choice(list(Gender)))  # Malthe
     first_name = factory.LazyAttribute(  # Malthe
-        lambda o: fake.first_name_male()
-        if o.gender == "male"
+        lambda x: fake.first_name_male()
+        if x.gender == Gender.male
         else fake.first_name_female()
     )
     last_name = factory.LazyAttribute(lambda x: fake.last_name())  # Malthe
-    cpr = factory.LazyAttribute(lambda x: fake.ssn())  # Martin
     date_of_birth = factory.LazyAttribute(lambda x: fake.date_of_birth())  # Martin
+    cpr = factory.LazyAttribute(
+        lambda x: martin.generate_cpr(x.date_of_birth, x.gender)
+    )  # Martin
     phone_number = factory.LazyAttribute(lambda x: _generate_phone_number())  # Mo
     address = factory.SubFactory(AddressFactory)  # Martin
 
