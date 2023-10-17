@@ -38,7 +38,7 @@ class BaseFactory(Generic[TModel], factory.Factory):
     @classmethod
     def create_batch(cls, size: int, **kwargs: Any) -> list[TModel]:
         """Create a batch of instances of the associated model."""
-        return [cls._generate("create", kwargs) for _ in range(size)]
+        return [cls.create(**kwargs) for _ in range(size)]
 
 
 class AddressFactory(BaseFactory[AddressDTO]):
