@@ -14,7 +14,7 @@ test: ## Run tests
 
 migration-generate:  ## Generate a new migration file
 	@echo "Running migration"
-	docker container exec $$(docker ps | grep api_1 | awk '{print $$1}') alembic revision --autogenerate
+	docker container exec $$(docker ps | grep sd23-testing-mand1-api-1 | awk '{print $$1}') alembic revision --autogenerate
 
 migration-upgrade-head:  ## Upgrade to the latest migration
-	docker container exec $$(docker ps | grep api_1 | awk '{print $$1}') alembic upgrade head
+	docker container exec $$(docker ps | grep sd23-testing-mand1-api-1 | awk '{print $$1}') alembic upgrade head
