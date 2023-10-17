@@ -18,31 +18,33 @@ class AddressFactory(factory.Factory):
     class Meta:
         model = Address
 
-    street = factory.LazyAttribute(lambda x: str(fake.street_name()))
-    number = factory.LazyAttribute(lambda x: str(fake.building_number()))
-    door = factory.LazyAttribute(lambda x: str(fake.building_number()))
-    floor = factory.LazyAttribute(lambda x: str(random.randint(1, 20)))
-    town = factory.LazyAttribute(lambda x: str(fake.city_name()))
-    postal_code = factory.LazyAttribute(lambda x: int(fake.postcode()))
+    street = factory.LazyAttribute(lambda x: str(fake.street_name())) # Malthe
+    number = factory.LazyAttribute(lambda x: str(fake.building_number())) #Martin
+    door = factory.LazyAttribute(lambda x: str(fake.building_number()))# Mo
+    floor = factory.LazyAttribute(lambda x: str(random.randint(1, 20)))# Malthe
+    town = factory.LazyAttribute(lambda x: str(fake.city_name())) # Mo
+    postal_code = factory.LazyAttribute(lambda x: int(fake.postcode())) # Mo
 
 
-class UserFactory(factory.Factory):
+class FakeInfoFactory(factory.Factory):
     """User factory."""
 
     class Meta:
         model = User
 
-    gender = factory.LazyAttribute(lambda x: random.choice(["male", "female"]))
-    first_name = factory.LazyAttribute(
+    gender = factory.LazyAttribute(
+        lambda x: random.choice(["male", "female"])
+    )  # Malthe
+    first_name = factory.LazyAttribute(  # Malthe
         lambda o: fake.first_name_male()
         if o.gender == "male"
         else fake.first_name_female()
     )
-    last_name = factory.LazyAttribute(lambda x: fake.last_name())
-    cpr = factory.LazyAttribute(lambda x: fake.ssn())
-    date_of_birth = factory.LazyAttribute(lambda x: fake.date_of_birth())
-    phone_number = _generate_phone_number()
-    address = factory.SubFactory(AddressFactory)
+    last_name = factory.LazyAttribute(lambda x: fake.last_name())  # Malthe
+    cpr = factory.LazyAttribute(lambda x: fake.ssn())  # Martin
+    date_of_birth = factory.LazyAttribute(lambda x: fake.date_of_birth())  # Martin
+    phone_number = _generate_phone_number()  # Mo
+    address = factory.SubFactory(AddressFactory)# Martin
 
 
 wow = [
