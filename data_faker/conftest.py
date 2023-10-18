@@ -109,3 +109,4 @@ async def client(
     """
     async with AsyncClient(app=fastapi_app, base_url="http://test") as ac:
         yield ac
+
