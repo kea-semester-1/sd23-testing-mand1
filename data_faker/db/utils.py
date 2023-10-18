@@ -46,6 +46,7 @@ async def drop_database() -> None:
         await conn.execute(text(disc_users))
         await conn.execute(text(f'DROP DATABASE "{settings.db_base}"'))
 
+
 def is_valid_name(name: str) -> bool:
     """
     Validates if the given name contains only English and Danish letters.
@@ -73,6 +74,7 @@ def is_valid_number(s: str) -> bool:
     if s[-1] in string.ascii_uppercase and s[:-1].isdigit() and 1 <= int(s[:-1]) <= 999:
         return True
     return False
+
 
 def is_valid_street(name: str) -> bool:
     pattern = r"^[A-Za-zæøåÆØÅ\.][A-Za-zæøåÆØÅ\. ]*[A-Za-zæøåÆØÅ\.]$"
