@@ -1,15 +1,6 @@
-
 import pytest
 
-from data_faker.db.utils_malthe import is_valid_floor
-
-
-# def test_valid_floor() -> None:
-#   """Test if generate_floor() produces valid floor values."""
-#
-#  generated_floor = generate_floor()
-
-# assert generated_floor in range(1,99) or generated_floor == "st"
+from data_faker.db.utils import is_valid_floor
 
 
 @pytest.mark.parametrize(
