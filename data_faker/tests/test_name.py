@@ -5,6 +5,7 @@ from data_faker.db.utils import is_valid_name
 
 
 def test_is_valid_name():
+    """Testing if the function works."""
     for _ in range(100):
         person_info = extract_person_info()
 
@@ -26,4 +27,5 @@ invalid_names = [
 
 @pytest.mark.parametrize("name", invalid_names)
 def test_invalid_names(name):
+    """Testing if the function works."""
     assert not is_valid_name(name), f"Failed for name: {name}"

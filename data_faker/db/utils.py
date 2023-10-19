@@ -50,17 +50,14 @@ async def drop_database() -> None:
 def is_valid_name(name: str) -> bool:
     """
     Validates if the given name contains only English and Danish letters.
-
-    Returns:
-        bool: True if the name is valid, False otherwise.
     """
-    # Regular expression pattern to match only English and Danish letters and spaces, but not starting or ending spaces.
     pattern = r"^[A-Za-zæøåÆØÅ\.][A-Za-zæøåÆØÅ\. ]*[A-Za-zæøåÆØÅ\.]$"
 
     return bool(re.match(pattern, name))
 
 
 def is_valid_floor(s: str) -> bool:
+    """Check if the floor generated is valid."""
     if s == "st":
         return True
     if s.isdigit() and 1 <= int(s) <= 99:
@@ -69,6 +66,7 @@ def is_valid_floor(s: str) -> bool:
 
 
 def is_valid_number(s: str) -> bool:
+    """Check if the number generated is valid."""
     if s.isdigit() and 1 <= int(s) <= 999:
         return True
     if s[-1] in string.ascii_uppercase and s[:-1].isdigit() and 1 <= int(s[:-1]) <= 999:
@@ -77,6 +75,7 @@ def is_valid_number(s: str) -> bool:
 
 
 def is_valid_street(name: str) -> bool:
+    """Check if the street name generated is valid."""
     pattern = r"^[A-Za-zæøåÆØÅ\.][A-Za-zæøåÆØÅ\. ]*[A-Za-zæøåÆØÅ\.]$"
 
     return bool(re.match(pattern, name))

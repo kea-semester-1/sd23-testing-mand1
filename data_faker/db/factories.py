@@ -22,6 +22,8 @@ def _generate_phone_number() -> str:
 
 
 def generate_number() -> str:
+    """Generate a random number between 1 and 999.
+    A letter might be added at the end."""
     number = random.randint(1, 999)
 
     # Decide whether to append an uppercase letter
@@ -33,18 +35,21 @@ def generate_number() -> str:
 
 
 def generate_floor() -> Any:
+    """Generate a random floor number."""
     if random.randint(1, 100) <= 35:
         return "st"
     else:
         return str(random.randint(1, 99))
 
 
-def extract_person_info() -> dict:
+def extract_person_info() -> dict[str]:
     """
-    Extracts the first_name, last_name, and gender from the first object in the persons array in the JSON file.
-
+    Extracts the first_name, last_name, and gender
     Returns:
-        dict: A dictionary containing first_name, last_name, and gender of the first person.
+        dict: A dictionary containing
+            first_name,
+            last_name,
+            and gender.
     """
     with open("input_files/person-names.json", encoding="utf-16") as file:
         data = json.load(file)

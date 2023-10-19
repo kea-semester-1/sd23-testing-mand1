@@ -20,4 +20,5 @@ from data_faker.db.utils import is_valid_street
     ],
 )
 def test_validate_street(street_value, expected):
+    """Testing if the function works."""
     assert is_valid_street(street_value) == expected
