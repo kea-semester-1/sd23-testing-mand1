@@ -56,15 +56,9 @@ def extract_person_info() -> dict[str]:
 
         # Check if persons array exists and has at least one object
         if "persons" in data and len(data["persons"]) > 0:
-            person = random.choice(data["persons"])
-            return {
-                "first_name": person.get("name", None),
-                "last_name": person.get("surname", None),
-                "gender": person.get("gender", None),
-            }
+            return data["persons"]
         else:
             return None
-
 
 class BaseFactory(Generic[TModel], factory.Factory):
     """
@@ -108,9 +102,10 @@ class FakeInfoFactory(BaseFactory[FakeInfoDTO]):
     class Meta:
         model = FakeInfoDTO
 
-    person_info = factory.LazyAttribute(lambda x: extract_person_info())
-    first_name = factory.LazyAttribute(lambda x: x.person_info["first_name"])
-    last_name = factory.LazyAttribute(lambda x: x.person_info["last_name"])
+    #person_info = factory.LazyAttribute(lambda x: extract_person_info())
+    person_info = factory.LazyAttribute(lambda  x: random.choice(extract_person_info()))
+    first_name = factory.LazyAttribute(lambda x: x.person_info["name"])
+    last_name = factory.LazyAttribute(lambda x: x.person_info["surname"])
     gender = factory.LazyAttribute(lambda x: x.person_info["gender"])
     cpr = factory.LazyAttribute(lambda x: fake.ssn())  # Martin
     date_of_birth = factory.LazyAttribute(lambda x: fake.date_of_birth())  # Martin

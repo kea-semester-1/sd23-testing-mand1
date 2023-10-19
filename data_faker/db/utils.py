@@ -51,7 +51,7 @@ def is_valid_name(name: str) -> bool:
     """
     Validates if the given name contains only English and Danish letters.
     """
-    pattern = r"^[A-Za-zæøåÆØÅ\.][A-Za-zæøåÆØÅ\. ]*[A-Za-zæøåÆØÅ\.]$"
+    pattern = r"^[A-Za-zæøåÆØÅ\.]([A-Za-zæøåÆØÅ\. ]|-[^-]+|[^-]+-)*[A-Za-zæøåÆØÅ\.]$"
 
     return bool(re.match(pattern, name))
 

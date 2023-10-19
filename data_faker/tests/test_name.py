@@ -4,14 +4,12 @@ from data_faker.db.factories import extract_person_info
 from data_faker.db.utils import is_valid_name
 
 
-def test_is_valid_name():
+@pytest.mark.parametrize("person_list", extract_person_info())
+def test_is_valid_name(person_list: dict):
     """Testing if the function works."""
-    for _ in range(100):
-        person_info = extract_person_info()
 
-        assert is_valid_name(person_info["first_name"])
-        assert is_valid_name(person_info["last_name"])
-
+    assert is_valid_name(person_list["name"])
+    assert is_valid_name(person_list["surname"])
 
 invalid_names = [
     "Casper1",  # including a numeric value
