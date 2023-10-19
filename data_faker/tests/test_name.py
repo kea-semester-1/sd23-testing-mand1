@@ -19,6 +19,8 @@ invalid_names = [
     " Casper",  # starting with a space
     "123512123",  # only numeric values
     "珀ØΚάσ",  # Mixing language characters. Danish, Chinese & Greek
+    "カスパー",  # Japanese
+    "Malthe ",  # Trailing space
 ]
 
 
