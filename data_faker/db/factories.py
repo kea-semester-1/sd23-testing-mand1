@@ -104,7 +104,7 @@ class FakeInfoFactory(BaseFactory[FakeInfoDTO]):
     class Meta:
         model = FakeInfoDTO
 
-    person_info = factory.LazyAttribute(lambda  x: random.choice(extract_person_info()))
+    person_info = factory.LazyAttribute(lambda  x: random.choice(extract_person_info("input_files/person-names.json")))
     first_name = factory.LazyAttribute(lambda x: x.person_info["name"])
     last_name = factory.LazyAttribute(lambda x: x.person_info["surname"])
     gender = factory.LazyAttribute(lambda x: x.person_info["gender"])
