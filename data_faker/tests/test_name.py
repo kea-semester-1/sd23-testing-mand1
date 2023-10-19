@@ -4,12 +4,19 @@ from data_faker.db.factories import extract_person_info
 from data_faker.db.utils import is_valid_name
 
 
-@pytest.mark.parametrize("person_list", extract_person_info())
+@pytest.mark.parametrize("person_list", extract_person_info("input_files/person-names.json"))
 def test_is_valid_name(person_list: dict):
     """Testing if the function works."""
 
     assert is_valid_name(person_list["name"])
     assert is_valid_name(person_list["surname"])
+
+def test_is_valid_name_wrong_path():
+    """Testing if the function works."""
+
+    with pytest.raises(FileNotFoundError):
+        extract_person_info("input_files/persons.json") # File does not exist
+
 
 invalid_names = [
     "Casper1",  # including a numeric value

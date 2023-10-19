@@ -44,7 +44,7 @@ def generate_floor() -> Any:
         return str(random.randint(1, 99))
 
 
-def extract_person_info() -> dict[str]:
+def extract_person_info(path: str) -> dict[str, list]:
     """
     Extracts the first_name, last_name, and gender
     Returns:
@@ -53,14 +53,14 @@ def extract_person_info() -> dict[str]:
             last_name,
             and gender.
     """
-    with open("input_files/person-names.json", encoding="utf-16") as file:
+    with open(path, encoding="utf-16") as file:
         data = json.load(file)
 
         # Check if persons array exists and has at least one object
         if "persons" in data and len(data["persons"]) > 0:
             return data["persons"]
-        else:
-            return None
+
+        raise FileNotFoundError("File does not exists")
 
 class BaseFactory(Generic[TModel], factory.Factory):
     """
