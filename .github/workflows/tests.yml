@@ -1,4 +1,5 @@
 name: Testing data_faker
+# Delete after test
 on:
   push:
     branches:
