@@ -1,3 +1,6 @@
+import json
+import string
+
 import factory
 from faker import Faker
 import random
@@ -11,6 +14,53 @@ from data_faker.db import mo_utils as utils
 fake = Faker("da_Dk")
 TModel = TypeVar("TModel", bound=BaseModel)
 
+
+
+# TODO: Probably move all helper functions to a separate file
+def _generate_phone_number() -> str:
+    """Generates a random unique phone number."""
+    phone_number = "".join(str(random.randint(2, 7)) for _ in range(8))
+    return f"+45{phone_number}"
+
+
+def generate_number() -> str:
+    """Generate a random number between 1 and 999.
+    A letter might be added at the end."""
+    number = random.randint(1, 999)
+
+    # Decide whether to append an uppercase letter
+    if random.choice([True, False]):
+        letter = random.choice(string.ascii_uppercase)
+        return f"{number}{letter}"
+    else:
+        return str(number)
+
+
+def generate_floor() -> Any:
+    """Generate a random floor number."""
+    if random.randint(1, 100) <= 35:
+        return "st"
+    else:
+        return str(random.randint(1, 99))
+
+
+def extract_person_info() -> dict[str]:
+    """
+    Extracts the first_name, last_name, and gender
+    Returns:
+        dict: A dictionary containing
+            first_name,
+            last_name,
+            and gender.
+    """
+    with open("input_files/person-names.json", encoding="utf-16") as file:
+        data = json.load(file)
+
+        # Check if persons array exists and has at least one object
+        if "persons" in data and len(data["persons"]) > 0:
+            return data["persons"]
+        else:
+            return None
 
 class BaseFactory(Generic[TModel], factory.Factory):
     """
@@ -40,10 +90,10 @@ class AddressFactory(BaseFactory[AddressDTO]):
     class Meta:
         model = AddressDTO
 
-    street = factory.LazyAttribute(lambda x: str(fake.street_name()))  # Malthe
-    number = factory.LazyAttribute(lambda x: str(fake.building_number()))  # Martin
+    street = factory.LazyAttribute(lambda x: str(fake.street_name()))
+    number = factory.LazyAttribute(lambda x: generate_number())
     door = factory.LazyAttribute(lambda x: str(fake.building_number()))  # Mo
-    floor = factory.LazyAttribute(lambda x: str(random.randint(1, 20)))  # Malthe
+    floor = factory.LazyAttribute(lambda x: generate_floor())
     town = factory.LazyAttribute(lambda x: str(fake.city_name()))  # Mo
     postal_code = factory.LazyAttribute(lambda x: int(fake.postcode()))  # Mo
 
@@ -54,15 +104,10 @@ class FakeInfoFactory(BaseFactory[FakeInfoDTO]):
     class Meta:
         model = FakeInfoDTO
 
-    gender = factory.LazyAttribute(
-        lambda x: random.choice(["male", "female"])
-    )  # Malthe
-    first_name = factory.LazyAttribute(  # Malthe
-        lambda o: fake.first_name_male()
-        if o.gender == "male"
-        else fake.first_name_female()
-    )
-    last_name = factory.LazyAttribute(lambda x: fake.last_name())  # Malthe
+    person_info = factory.LazyAttribute(lambda  x: random.choice(extract_person_info()))
+    first_name = factory.LazyAttribute(lambda x: x.person_info["name"])
+    last_name = factory.LazyAttribute(lambda x: x.person_info["surname"])
+    gender = factory.LazyAttribute(lambda x: x.person_info["gender"])
     cpr = factory.LazyAttribute(lambda x: fake.ssn())  # Martin
     date_of_birth = factory.LazyAttribute(lambda x: fake.date_of_birth())  # Martin
     phone_number = factory.LazyAttribute(lambda x: utils.get_valid_phone_number())  # Mo
