@@ -15,6 +15,8 @@ from data_faker.db.dependencies import get_db_session
 from data_faker.db.utils import create_database, drop_database
 from data_faker.settings import settings
 from data_faker.web.application import get_app
+import sqlparse
+import sqlalchemy as sa
 
 
 @pytest.fixture(scope="session")
@@ -110,3 +112,14 @@ async def client(
     async with AsyncClient(app=fastapi_app, base_url="http://test") as ac:
         yield ac
 
+
+@pytest.fixture
+async def address_data(dbsession: AsyncSession) -> None:
+    """Loads the test db with address data."""
+
+    with open("./input_files/addresses.sql") as f:
+        sql_commands = f.read()
+
+    for cmd in sqlparse.split(sql_commands):
+        if cmd.strip():  # ensuring no empty command is executed
+            await dbsession.execute(sa.text(cmd))
