@@ -1,5 +1,4 @@
-from fastapi import APIRouter, Depends
-from data_faker.db.dao.user_dao import UserDAO
+from fastapi import APIRouter
 from data_faker.web.dtos.fake_info_dto import FakeInfoDTO
 from data_faker.db.factories import FakeInfoFactory
 
