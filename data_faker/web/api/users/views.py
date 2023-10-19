@@ -1,24 +1,8 @@
-from fastapi import APIRouter, Depends
-from data_faker.db.dao.user_dao import UserDAO
+from fastapi import APIRouter
 from data_faker.web.dtos.fake_info_dto import FakeInfoDTO
 from data_faker.db.factories import FakeInfoFactory
 
 router = APIRouter()
-
-
-@router.get("")
-async def get_users(dao: UserDAO = Depends()):
-    """Get all users."""
-    return await dao.get_all()
-
-
-@router.post("")
-async def create(
-    dao: UserDAO = Depends(),
-) -> None:
-    """Create a new user."""
-
-    return await dao.create()
 
 
 @router.get("/factory-demo")

@@ -18,3 +18,7 @@ migration-generate:  ## Generate a new migration file
 
 migration-upgrade-head:  ## Upgrade to the latest migration
 	docker container exec $$(docker ps | grep sd23-testing-mand1-api-1 | awk '{print $$1}') alembic upgrade head
+
+test-filter:  ## Run specific tests. Example: 'make test-filter filter="test_phone_numbers"'.
+	@echo "Running tests..."
+	docker container exec $$(docker ps | grep api-1 | awk '{print $$1}') pytest ./data_faker/tests -s -v -k $(filter)
