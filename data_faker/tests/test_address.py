@@ -6,7 +6,8 @@ import sqlalchemy as sa
 
 
 @pytest.mark.anyio
-async def test_get_address(dbsession: AsyncSession) -> None:
+async def test_get_random_address(dbsession: AsyncSession) -> None:
+    """Testing """
     address = AddressDAO(dbsession)
 
     with open("./input_files/addresses.sql", "r") as f:
@@ -16,7 +17,6 @@ async def test_get_address(dbsession: AsyncSession) -> None:
     for cmd in sqlparse.split(sql_commands):
         if cmd.strip():  # ensuring no empty command is executed
             await dbsession.execute(sa.text(cmd))
-    # ### end Alembic commands ###
     address_1 = await address.get_random_row()
 
     print(address_1)
