@@ -15,7 +15,6 @@ fake = Faker("da_Dk")
 TModel = TypeVar("TModel", bound=BaseModel)
 
 
-
 # TODO: Probably move all helper functions to a separate file
 def _generate_phone_number() -> str:
     """Generates a random unique phone number."""
@@ -62,6 +61,7 @@ def extract_person_info(path: str) -> dict[str, list]:
 
         raise FileNotFoundError("File does not exists")
 
+
 class BaseFactory(Generic[TModel], factory.Factory):
     """
     Base factory.
@@ -104,7 +104,9 @@ class FakeInfoFactory(BaseFactory[FakeInfoDTO]):
     class Meta:
         model = FakeInfoDTO
 
-    person_info = factory.LazyAttribute(lambda  x: random.choice(extract_person_info("input_files/person-names.json")))
+    person_info = factory.LazyAttribute(
+        lambda x: random.choice(extract_person_info("input_files/person-names.json"))
+    )
     first_name = factory.LazyAttribute(lambda x: x.person_info["name"])
     last_name = factory.LazyAttribute(lambda x: x.person_info["surname"])
     gender = factory.LazyAttribute(lambda x: x.person_info["gender"])
