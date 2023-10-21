@@ -1,4 +1,5 @@
 import pytest
+
 from data_faker import martin
 
 # TODO: Add more parametrized tests (Black box testing)
@@ -10,7 +11,7 @@ from data_faker import martin
 )
 def test_get_seventh_cipher_range(year: str, expected: list[str]) -> None:
     """Test get_seventh_cipher_range."""
-    actual = martin.get_seventh_cipher_range(year)
+    actual = martin.generate_seventh_cipher_range(year)
     assert actual == expected
 
 

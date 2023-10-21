@@ -1,6 +1,7 @@
-from datetime import datetime
-from data_faker.db.enums import Gender
 import random
+from datetime import datetime
+
+from data_faker.db.enums import Gender
 
 SEVENTH_CIPHER_MAPPING = {
     0: [(1900, 1999)],
@@ -16,7 +17,7 @@ SEVENTH_CIPHER_MAPPING = {
 }
 
 
-def get_seventh_cipher_range(year: str) -> list[str]:
+def generate_seventh_cipher_range(year: str) -> list[str]:
     """Get a range of valid seventh ciphers, based on the year of birth."""
     return [
         str(key)
@@ -44,19 +45,23 @@ def validate_gender_match(cpr: str, gender: Gender) -> None:
     """Validate if the gender matches the CPR number."""
     last_cipher_is_even = int(cpr[-1]) % 2 == 0
 
-    if last_cipher_is_even and gender == Gender.male:
+    print(last_cipher_is_even, gender)
+
+    print(gender, Gender.male, gender == Gender.male)
+
+    if last_cipher_is_even and str(gender) == str(Gender.male):
         raise ValueError(f"Gender mismatch. gender: {gender}, last cipher: {cpr[-1]}")
 
 
 def validate_seventh_cipher(cpr: str, full_year: str) -> None:
     """Validate the seventh cipher of a CPR number."""
     seventh_cipher = cpr[6]
-    valid_range = get_seventh_cipher_range(full_year)
+    valid_range = generate_seventh_cipher_range(full_year)
 
     if seventh_cipher not in valid_range:
         raise ValueError(
             f"Invalid seventh cipher. Cipher: {seventh_cipher},"
-            f"year: {full_year}, range: {valid_range}"
+            f"year: {full_year}, range: {valid_range}",
         )
 
 
@@ -76,7 +81,7 @@ def generate_cpr(date_of_birth: datetime, gender: Gender) -> str:
     year = str(date_of_birth.year)
     year_short = year[-2:]
 
-    seventh_cipher = random.choice(get_seventh_cipher_range(year))
+    seventh_cipher = random.choice(generate_seventh_cipher_range(year))
     eighth_cipher = random.randrange(0, 9)
     ninth_cipher = random.randrange(0, 9)
     last_cipher = generate_random_last_cipher(gender)

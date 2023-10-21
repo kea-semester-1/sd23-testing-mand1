@@ -1,13 +1,19 @@
+import json
+import random
+import string
+from functools import cache
+from typing import Any, Generic, TypeVar
+
 import factory
 from faker import Faker
-import random
-from typing import Any, Generic, TypeVar
 from pydantic import BaseModel
+
+from data_faker import martin
+from data_faker.db import mo_utils as utils
+from data_faker.db.enums import Gender
 from data_faker.web.dtos.address_dto import AddressDTO
 from data_faker.web.dtos.fake_info_dto import FakeInfoDTO
-from data_faker.db.enums import Gender
-from data_faker import martin
-
+from data_faker.web.dtos.person_info_dto import PersonInfoDTO
 
 fake = Faker("da_Dk")
 TModel = TypeVar("TModel", bound=BaseModel)
@@ -18,6 +24,59 @@ def _generate_phone_number() -> str:
     """Generates a random unique phone number."""
     phone_number = "".join(str(random.randint(2, 7)) for _ in range(8))
     return f"+45{phone_number}"
+
+
+def generate_number() -> str:
+    """Generate a random number between 1 and 999.
+    A letter might be added at the end."""
+    number = random.randint(1, 999)
+
+    # Decide whether to append an uppercase letter
+    if random.choice([True, False]):
+        letter = random.choice(string.ascii_uppercase)
+        return f"{number}{letter}"
+    else:
+        return str(number)
+
+
+def generate_floor() -> Any:
+    """Generate a random floor number."""
+    if random.randint(1, 100) <= 35:
+        return "st"
+    else:
+        return str(random.randint(1, 99))
+
+
+@cache
+def extract_person_info(path: str) -> list[PersonInfoDTO]:
+    """
+    Extracts the first_name, last_name, and gender
+    Returns:
+        A list of PersonInfoDTOs.
+    """
+    with open(path, encoding="utf-16") as file:
+        data = json.load(file)
+
+        # Check if persons array exists and has at least one object
+        is_valid = (
+            "persons" in data
+            and isinstance(data["persons"], list)
+            and len(data["persons"]) > 0
+        )
+
+        if is_valid:
+            persons_info = data["persons"]
+
+            return [
+                PersonInfoDTO(
+                    name=person["name"],
+                    surname=person["surname"],
+                    gender=Gender(person["gender"]),
+                )
+                for person in persons_info
+            ]
+
+        raise FileNotFoundError("File does not exists")
 
 
 class BaseFactory(Generic[TModel], factory.Factory):
@@ -48,11 +107,11 @@ class AddressFactory(BaseFactory[AddressDTO]):
     class Meta:
         model = AddressDTO
 
-    street = factory.LazyAttribute(lambda x: str(fake.street_name()))  # Malthe
-    number = factory.LazyAttribute(lambda x: str(fake.building_number()))  # Martin
-    door = factory.LazyAttribute(lambda x: str(fake.building_number()))  # Mo
-    floor = factory.LazyAttribute(lambda x: str(random.randint(1, 20)))  # Malthe
-    town = factory.LazyAttribute(lambda x: str(fake.city_name()))  # Mo
+    street = factory.LazyAttribute(lambda _: str(fake.street_name()))
+    number = factory.LazyAttribute(lambda _: generate_number())
+    door = factory.LazyAttribute(lambda _: str(fake.building_number()))  # Mo
+    floor = factory.LazyAttribute(lambda _: generate_floor())
+    town = factory.LazyAttribute(lambda _: str(fake.city_name()))  # Mo
     postal_code = factory.LazyAttribute(lambda x: int(fake.postcode()))  # Mo
 
 
@@ -62,18 +121,19 @@ class FakeInfoFactory(BaseFactory[FakeInfoDTO]):
     class Meta:
         model = FakeInfoDTO
 
-    gender = factory.LazyAttribute(lambda x: random.choice(list(Gender)))  # Malthe
-    first_name = factory.LazyAttribute(  # Malthe
-        lambda x: fake.first_name_male()
-        if x.gender == Gender.male
-        else fake.first_name_female()
+    person_info = factory.LazyAttribute(
+        lambda _: random.choice(extract_person_info("input_files/person-names.json")),
     )
-    last_name = factory.LazyAttribute(lambda x: fake.last_name())  # Malthe
+    first_name = factory.LazyAttribute(lambda x: x.person_info.name)
+    last_name = factory.LazyAttribute(lambda x: x.person_info.surname)
+    gender = factory.LazyAttribute(lambda x: x.person_info.gender)
     date_of_birth = factory.LazyAttribute(lambda x: fake.date_of_birth())  # Martin
     cpr = factory.LazyAttribute(
-        lambda x: martin.generate_cpr(x.date_of_birth, x.gender)
-    )  # Martin
-    phone_number = factory.LazyAttribute(lambda x: _generate_phone_number())  # Mo
+        lambda x: martin.generate_cpr(x.date_of_birth, x.gender),
+    )
+    phone_number = factory.LazyAttribute(
+        lambda _: utils.generate_valid_phone_number(),
+    )  # Mo
     address = factory.SubFactory(AddressFactory)  # Martin
 
 
