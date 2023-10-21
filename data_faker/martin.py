@@ -3,6 +3,9 @@ from datetime import datetime
 
 from data_faker.db.enums import Gender
 
+MIN_BIRTH_YEAR = 1858
+MAX_BIRTH_YEAR = 2057
+
 SEVENTH_CIPHER_MAPPING = {
     0: [(1900, 1999)],
     1: [(1900, 1999)],
@@ -26,7 +29,7 @@ def generate_seventh_cipher_range(year: str) -> list[str]:
     ]
 
 
-def validate_cpr_format(cpr: str) -> None:
+def validate_cpr_format(cpr: str) -> bool:
     """Validate the format of a CPR number."""
     if len(cpr) != 10:
         raise ValueError(f"Invalid CPR number length. Length: {len(cpr)} ")
@@ -35,25 +38,27 @@ def validate_cpr_format(cpr: str) -> None:
         raise ValueError("Non-digit characters in CPR number.")
 
     dob = cpr[:6]
-    day, month, year = map(int, [dob[:2], dob[2:4], dob[4:]])
+    date_format = "%d%m%y"
 
-    if not (1 <= day <= 31 and 1 <= month <= 12 and 0 <= year <= 99):
-        raise ValueError("Invalid date of birth.")
+    try:
+        datetime.strptime(dob, date_format)
+    except ValueError as e:
+        raise e
+
+    return True
 
 
-def validate_gender_match(cpr: str, gender: Gender) -> None:
+def validate_gender_match(cpr: str, gender: Gender) -> bool:
     """Validate if the gender matches the CPR number."""
     last_cipher_is_even = int(cpr[-1]) % 2 == 0
-
-    print(last_cipher_is_even, gender)
-
-    print(gender, Gender.male, gender == Gender.male)
 
     if last_cipher_is_even and str(gender) == str(Gender.male):
         raise ValueError(f"Gender mismatch. gender: {gender}, last cipher: {cpr[-1]}")
 
+    return True
 
-def validate_seventh_cipher(cpr: str, full_year: str) -> None:
+
+def validate_seventh_cipher(cpr: str, full_year: str) -> bool:
     """Validate the seventh cipher of a CPR number."""
     seventh_cipher = cpr[6]
     valid_range = generate_seventh_cipher_range(full_year)
@@ -64,9 +69,13 @@ def validate_seventh_cipher(cpr: str, full_year: str) -> None:
             f"year: {full_year}, range: {valid_range}",
         )
 
+    return True
+
 
 def generate_random_last_cipher(gender: Gender) -> str:
     """Generate the last cipher, based on gender."""
+
+    print(gender, Gender.male, gender == Gender.male)
     return (
         str(random.choice([1, 3, 5, 7, 9]))
         if gender == Gender.male
@@ -74,8 +83,31 @@ def generate_random_last_cipher(gender: Gender) -> str:
     )
 
 
+def get_validated_cpr(cpr: str, year: str, gender: Gender) -> str:
+    """Validate and return cpr."""
+
+    cpr_stripped = cpr.replace("-", "")
+
+    validate_cpr_format(cpr_stripped)
+    validate_gender_match(cpr_stripped, gender)
+    validate_seventh_cipher(cpr_stripped, year)
+
+    return cpr
+
+
 def generate_cpr(date_of_birth: datetime, gender: Gender) -> str:
     """Generate a CPR number based on date of birth and gender."""
+
+    if date_of_birth.year < MIN_BIRTH_YEAR:
+        raise ValueError(
+            f"Cannot generate CPR-Number for birth years less than {MIN_BIRTH_YEAR}"
+        )
+
+    if date_of_birth.year > MAX_BIRTH_YEAR:
+        raise ValueError(
+            f"Cannot  generate CPR-Number for birth years greater than {MAX_BIRTH_YEAR}"
+        )
+
     day = f"{date_of_birth.day:02}"
     month = f"{date_of_birth.month:02}"
     year = str(date_of_birth.year)
@@ -89,10 +121,5 @@ def generate_cpr(date_of_birth: datetime, gender: Gender) -> str:
     dob_ciphers = f"{day}{month}{year_short}"
     control_ciphers = f"{seventh_cipher}{eighth_cipher}{ninth_cipher}{last_cipher}"
     cpr = f"{dob_ciphers}-{control_ciphers}"
-    cpr_stripped = cpr.replace("-", "")
 
-    validate_cpr_format(cpr_stripped)
-    validate_gender_match(cpr_stripped, gender)
-    validate_seventh_cipher(cpr_stripped, year)
-
-    return cpr
+    return get_validated_cpr(cpr, year, gender)
