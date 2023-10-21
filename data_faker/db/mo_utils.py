@@ -1,5 +1,12 @@
 import random
 import re
+from data_faker.db.dao.address_dao import AddressDAO
+from fastapi import Depends
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from data_faker.db.models.models import Address
+from data_faker.db.dependencies import get_db_session
+import asyncio
 
 
 def generate_phone_number() -> str:
@@ -123,3 +130,14 @@ def get_valid_phone_number() -> str:
         return get_valid_phone_number()
 
     return phone_number
+
+
+def get_address_dao(session: AsyncSession = Depends(get_db_session)) -> AddressDAO:
+    return AddressDAO(session)
+
+
+async def get_random_postal_code_and_town(
+    address_dao: AddressDAO = Depends(get_address_dao),
+) -> Address:
+    address = await address_dao.get_random_row()
+    return address
