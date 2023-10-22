@@ -19,6 +19,6 @@ from data_faker.db.utils import is_valid_street
         ("Latin Str€€t", False),
     ],
 )
-def test_validate_street(street_value, expected):
+def test_validate_street(street_value: str, expected: bool) -> None:
     """Testing if the function works."""
     assert is_valid_street(street_value) == expected

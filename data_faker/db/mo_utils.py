@@ -7,6 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from data_faker.db.models.models import Address
 from data_faker.db.dependencies import get_db_session
 import asyncio
+import string
 
 
 def generate_phone_number() -> str:
@@ -122,12 +123,12 @@ def is_valid_phone_number(number: str) -> bool:
     return bool(re.match(pattern, number))
 
 
-def get_valid_phone_number() -> str:
+def generate_valid_phone_number() -> str:
     """Returns a valid phone_number."""
     phone_number = generate_phone_number()
 
     if not is_valid_phone_number(phone_number):
-        return get_valid_phone_number()
+        return generate_valid_phone_number()
 
     return phone_number
 
@@ -152,3 +153,43 @@ def is_valid_town_name(town_name: str) -> bool:
     pattern = re.compile(r"^[a-zA-ZæøåÆØÅ\s]+$")
 
     return bool(pattern.match(town_name))
+
+
+def generate_door_value() -> str:
+    """Generate random door value.
+
+    choice 1: Return "th", "mf", or "tv".
+    choice 2: Return a number from 1 to 50.
+    choice 3: Return a lowercase letter optionally followed by a dash,
+              then followed by one to three numeric digits.
+    """
+    choice = random.randint(1, 3)
+
+    if choice == 1:
+        return random.choice(["th", "mf", "tv"])
+
+    if choice == 2:
+        return str(random.randint(1, 50))
+
+    letter = random.choice(string.ascii_lowercase)
+    dash = "-" if random.choice([True, False]) else ""
+    number = str(random.randint(1, 999))
+    return f"{letter}{dash}{number}"
+
+
+def validate_door_value(value: str) -> bool:
+    """Validate the format of the door value."""
+
+    if value in ["th", "mf", "tv"]:
+        return True
+
+    # Check for a number from 1 to 50
+    if re.match(r"^[1-9]$|^[1-4][0-9]$|^50$", value):
+        return True
+
+    # Check for a lowercase letter optionally followed by a dash,
+    # then followed by one to three numeric digits
+    if re.match(r"^[a-z](-?\d{1,3})$", value):
+        return True
+
+    return False
