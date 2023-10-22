@@ -1,12 +1,13 @@
 from pydantic import BaseModel
 from datetime import datetime
+from data_faker.db.enums import Gender
 from data_faker.web.dtos.address_dto import AddressDTO
 
 
 class FakeInfoDTO(BaseModel):
     """Fake Info DTO."""
 
-    gender: str
+    gender: Gender
     first_name: str
     last_name: str
     cpr: str

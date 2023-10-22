@@ -10,7 +10,7 @@ run: ## Run the application
 
 test: ## Run tests
 	@echo "Running tests..."
-	docker container exec $$(docker ps | grep sd23-testing-mand1-api-1 | awk '{print $$1}') pytest ./data_faker/tests
+	docker container exec $$(docker ps | grep api-1 | awk '{print $$1}') pytest ./data_faker/tests
 
 migration-generate:  ## Generate a new migration file
 	@echo "Running migration"

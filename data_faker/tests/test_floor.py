@@ -17,6 +17,6 @@ from data_faker.db.utils import is_valid_floor
         ("2nd", False),
     ],
 )
-def test_validate_floor(floor_value, expected):
+def test_validate_floor(floor_value: str, expected: bool) -> None:
     """Testing if the function works."""
     assert is_valid_floor(floor_value) == expected

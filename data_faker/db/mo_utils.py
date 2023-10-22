@@ -116,12 +116,12 @@ def is_valid_phone_number(number: str) -> bool:
     return bool(re.match(pattern, number))
 
 
-def get_valid_phone_number() -> str:
+def generate_valid_phone_number() -> str:
     """Returns a valid phone_number."""
     phone_number = generate_phone_number()
 
     if not is_valid_phone_number(phone_number):
-        return get_valid_phone_number()
+        return generate_valid_phone_number()
 
     return phone_number
 
