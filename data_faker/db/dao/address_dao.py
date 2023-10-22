@@ -13,15 +13,15 @@ class AddressDAO:
     def __init__(self, session: AsyncSession = Depends(get_db_session)):
         self.session = session
 
-    async def get_random_row(self) -> Address:
+    async def get_random_row(self, limit: int = 1) -> list[Address]:
         """Retrieve random row from address table."""
 
-        query = sa.select(Address).order_by(sa.func.random()).limit(1)
+        query = sa.select(Address).order_by(sa.func.random()).limit(limit=limit)
 
         result = await self.session.execute(query)
-        address = result.scalars().first()
+        addresses = result.scalars().fetchall()
 
-        if address is None:
+        if addresses is None:
             raise NoResultFound("No row found.")
 
-        return address
+        return list(addresses)

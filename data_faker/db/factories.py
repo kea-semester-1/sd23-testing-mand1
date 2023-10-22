@@ -9,11 +9,11 @@ from pydantic import BaseModel
 from data_faker.web.dtos.address_dto import AddressDTO
 from data_faker.web.dtos.fake_info_dto import FakeInfoDTO
 from data_faker.db import mo_utils as utils
+from data_faker.db.models.models import Address
 
 
 fake = Faker("da_Dk")
 TModel = TypeVar("TModel", bound=BaseModel)
-
 
 
 # TODO: Probably move all helper functions to a separate file
@@ -62,6 +62,7 @@ def extract_person_info(path: str) -> dict[str, list]:
 
         raise FileNotFoundError("File does not exists")
 
+
 class BaseFactory(Generic[TModel], factory.Factory):
     """
     Base factory.
@@ -79,9 +80,13 @@ class BaseFactory(Generic[TModel], factory.Factory):
         return cls._generate("create", kwargs)
 
     @classmethod
-    def create_batch(cls, size: int, **kwargs: Any) -> list[TModel]:
-        """Create a batch of instances of the associated model."""
-        return [cls.create(**kwargs) for _ in range(size)]
+    def create_batch(
+        cls, size: int, addresses: list[Address] = None, **kwargs: Any
+    ) -> list[TModel]:
+        if addresses:
+            return [cls.create(address_info=address, **kwargs) for address in addresses]
+        else:
+            return [cls.create(**kwargs) for _ in range(size)]
 
 
 class AddressFactory(BaseFactory[AddressDTO]):
@@ -94,8 +99,17 @@ class AddressFactory(BaseFactory[AddressDTO]):
     number = factory.LazyAttribute(lambda x: generate_number())
     door = factory.LazyAttribute(lambda x: str(fake.building_number()))  # Mo
     floor = factory.LazyAttribute(lambda x: generate_floor())
-    town = factory.LazyAttribute(lambda x: str(fake.city_name()))  # Mo
-    postal_code = factory.LazyAttribute(lambda x: int(fake.postcode()))  # Mo
+    town = factory.Maybe(
+        factory.LazyAttribute(lambda obj: obj.town is not None),
+        yes_declaration=factory.SelfAttribute("..town"),
+        no_declaration=factory.LazyAttribute(lambda x: str(fake.city_name())),
+    )
+
+    postal_code = factory.Maybe(
+        factory.LazyAttribute(lambda obj: obj.postal_code is not None),
+        yes_declaration=factory.SelfAttribute("..postal_code"),
+        no_declaration=factory.LazyAttribute(lambda x: int(fake.postcode())),
+    )
 
 
 class FakeInfoFactory(BaseFactory[FakeInfoDTO]):
@@ -104,14 +118,20 @@ class FakeInfoFactory(BaseFactory[FakeInfoDTO]):
     class Meta:
         model = FakeInfoDTO
 
-    person_info = factory.LazyAttribute(lambda  x: random.choice(extract_person_info("input_files/person-names.json")))
+    person_info = factory.LazyAttribute(
+        lambda x: random.choice(extract_person_info("input_files/person-names.json"))
+    )
     first_name = factory.LazyAttribute(lambda x: x.person_info["name"])
     last_name = factory.LazyAttribute(lambda x: x.person_info["surname"])
     gender = factory.LazyAttribute(lambda x: x.person_info["gender"])
     cpr = factory.LazyAttribute(lambda x: fake.ssn())  # Martin
     date_of_birth = factory.LazyAttribute(lambda x: fake.date_of_birth())  # Martin
     phone_number = factory.LazyAttribute(lambda x: utils.get_valid_phone_number())  # Mo
-    address = factory.SubFactory(AddressFactory)  # Martin
+    address = factory.SubFactory(
+        AddressFactory,
+        town=factory.SelfAttribute("..address_info.town"),
+        postal_code=factory.SelfAttribute("..address_info.postal_code"),
+    )
 
 
 wow = [
