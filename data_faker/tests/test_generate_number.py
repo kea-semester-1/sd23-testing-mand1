@@ -19,6 +19,6 @@ from data_faker.db.utils import is_valid_number
         ("42#", False),
     ],
 )
-def test_validate_number(number_value, expected):
+def test_validate_number(number_value: str, expected: bool) -> None:
     """Testing if the function works."""
     assert is_valid_number(number_value) == expected
