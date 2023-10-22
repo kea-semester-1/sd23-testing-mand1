@@ -1,10 +1,8 @@
 import random
-from datetime import datetime
+from datetime import datetime, timedelta
+from data_faker import constants
 
 from data_faker.db.enums import Gender
-
-MIN_BIRTH_YEAR = 1858
-MAX_BIRTH_YEAR = 2057
 
 SEVENTH_CIPHER_MAPPING = {
     0: [(1900, 1999)],
@@ -49,10 +47,22 @@ def validate_cpr_format(cpr: str) -> bool:
 
 
 def validate_gender_match(cpr: str, gender: Gender) -> bool:
-    """Validate if the gender matches the CPR number."""
+    """
+    Validate if the gender matches the CPR number.
+
+    If male: last cipher is odd
+    If female: last cipher is even
+    """
     last_cipher_is_even = int(cpr[-1]) % 2 == 0
 
-    if last_cipher_is_even and str(gender) == str(Gender.male):
+    gender_mismatch = (
+        last_cipher_is_even
+        and gender == Gender.male
+        or not last_cipher_is_even
+        and gender == Gender.female
+    )
+
+    if gender_mismatch:
         raise ValueError(f"Gender mismatch. gender: {gender}, last cipher: {cpr[-1]}")
 
     return True
@@ -75,7 +85,6 @@ def validate_seventh_cipher(cpr: str, full_year: str) -> bool:
 def generate_random_last_cipher(gender: Gender) -> str:
     """Generate the last cipher, based on gender."""
 
-    print(gender, Gender.male, gender == Gender.male)
     return (
         str(random.choice([1, 3, 5, 7, 9]))
         if gender == Gender.male
@@ -83,29 +92,19 @@ def generate_random_last_cipher(gender: Gender) -> str:
     )
 
 
-def get_validated_cpr(cpr: str, year: str, gender: Gender) -> str:
-    """Validate and return cpr."""
-
-    cpr_stripped = cpr.replace("-", "")
-
-    validate_cpr_format(cpr_stripped)
-    validate_gender_match(cpr_stripped, gender)
-    validate_seventh_cipher(cpr_stripped, year)
-
-    return cpr
-
-
 def generate_cpr(date_of_birth: datetime, gender: Gender) -> str:
     """Generate a CPR number based on date of birth and gender."""
 
-    if date_of_birth.year < MIN_BIRTH_YEAR:
-        raise ValueError(
-            f"Cannot generate CPR-Number for birth years less than {MIN_BIRTH_YEAR}"
-        )
+    invalid_date_range = (
+        date_of_birth.year < constants.MIN_CPR_BIRTH_YEAR
+        or date_of_birth.year > constants.MAX_CPR_BIRTH_YEAR
+    )
 
-    if date_of_birth.year > MAX_BIRTH_YEAR:
+    if invalid_date_range:
         raise ValueError(
-            f"Cannot  generate CPR-Number for birth years greater than {MAX_BIRTH_YEAR}"
+            f"Cannot generate CPR-Number for birth years"
+            f" less than {constants.MIN_CPR_BIRTH_YEAR}"
+            f" or greater than {constants.MAX_CPR_BIRTH_YEAR}",
         )
 
     day = f"{date_of_birth.day:02}"
@@ -120,6 +119,32 @@ def generate_cpr(date_of_birth: datetime, gender: Gender) -> str:
 
     dob_ciphers = f"{day}{month}{year_short}"
     control_ciphers = f"{seventh_cipher}{eighth_cipher}{ninth_cipher}{last_cipher}"
-    cpr = f"{dob_ciphers}-{control_ciphers}"
+    return f"{dob_ciphers}-{control_ciphers}"
 
-    return get_validated_cpr(cpr, year, gender)
+
+#######
+# DOB #
+#######
+
+
+def generate_random_date_of_birth() -> datetime:
+    """Generate a random date of birth."""
+    start_date = datetime(constants.MIN_CPR_BIRTH_YEAR, 1, 1)
+    end_date = datetime(constants.MAX_CPR_BIRTH_YEAR, 12, 31)
+    days_between_dates = (end_date - start_date).days
+    random_number_of_days = random.randrange(days_between_dates)
+    return start_date + timedelta(days=random_number_of_days)
+
+
+def validate_date_format(date: datetime) -> bool:
+    """Validate a date of birth."""
+
+    invalid_date_range = (
+        date.year < constants.MIN_CPR_BIRTH_YEAR
+        or date.year > constants.MAX_CPR_BIRTH_YEAR
+    )
+
+    if invalid_date_range:
+        raise ValueError("Invalid date range.")
+
+    return True
