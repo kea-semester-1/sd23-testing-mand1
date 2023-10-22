@@ -21,7 +21,7 @@ class AddressDAO:
         result = await self.session.execute(query)
         addresses = result.scalars().fetchall()
 
-        if addresses is None:
+        if not addresses:
             raise NoResultFound("No row found.")
 
         return list(addresses)

@@ -136,5 +136,19 @@ def get_address_dao(session: AsyncSession = Depends(get_db_session)) -> AddressD
     return AddressDAO(session)
 
 
-def is_valid_postal_code(postal_code: int):
-    return bool(re.match("", postal_code))
+def is_valid_postal_code(postal_code: int) -> bool:
+    """Check if value is valid."""
+    return bool(re.match(r"^\d{4}$", str(postal_code)))
+
+
+def is_valid_town_name(town_name: str) -> bool:
+    """Validates if a given town name is a valid Danish town name."""
+    town_name = town_name.strip()
+
+    if not town_name:
+        return False
+
+    # allows for spaces between words in town names, e.g., "Frederiksberg C"
+    pattern = re.compile(r"^[a-zA-ZæøåÆØÅ\s]+$")
+
+    return bool(pattern.match(town_name))
