@@ -1,6 +1,6 @@
 import pytest
 
-from data_faker.db.db_utils import is_valid_street
+from data_faker import malthe
 
 
 @pytest.mark.parametrize(
@@ -21,4 +21,4 @@ from data_faker.db.db_utils import is_valid_street
 )
 def test_validate_street(street_value: str, expected: bool) -> None:
     """Testing if the function works."""
-    assert is_valid_street(street_value) == expected
+    assert malthe.is_valid_street(street_value) == expected

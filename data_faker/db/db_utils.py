@@ -1,6 +1,3 @@
-import re
-import string
-
 from sqlalchemy import text
 from sqlalchemy.engine import make_url
 from sqlalchemy.ext.asyncio import create_async_engine
@@ -45,37 +42,3 @@ async def drop_database() -> None:
         )
         await conn.execute(text(disc_users))
         await conn.execute(text(f'DROP DATABASE "{settings.db_base}"'))
-
-
-def is_valid_name(name: str) -> bool:
-    """
-    Validates if the given name contains only English and Danish letters.
-    """
-    pattern = r"^[A-Za-zæøåÆØÅ\.]([A-Za-zæøåÆØÅ\. ]|-[^-]+|[^-]+-)*[A-Za-zæøåÆØÅ\.]$"
-
-    return bool(re.match(pattern, name))
-
-
-def is_valid_floor(s: str) -> bool:
-    """Check if the floor generated is valid."""
-    if s == "st":
-        return True
-    if s.isdigit() and 1 <= int(s) <= 99:
-        return True
-    return False
-
-
-def is_valid_number(s: str) -> bool:
-    """Check if the number generated is valid."""
-    if s.isdigit() and 1 <= int(s) <= 999:
-        return True
-    if s[-1] in string.ascii_uppercase and s[:-1].isdigit() and 1 <= int(s[:-1]) <= 999:
-        return True
-    return False
-
-
-def is_valid_street(name: str) -> bool:
-    """Check if the street name generated is valid."""
-    pattern = r"^[A-Za-zæøåÆØÅ\.][A-Za-zæøåÆØÅ\. ]*[A-Za-zæøåÆØÅ\.]$"
-
-    return bool(re.match(pattern, name))
