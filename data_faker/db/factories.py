@@ -127,7 +127,9 @@ class FakeInfoFactory(BaseFactory[FakeInfoDTO]):
     first_name = factory.LazyAttribute(lambda x: x.person_info.name)
     last_name = factory.LazyAttribute(lambda x: x.person_info.surname)
     gender = factory.LazyAttribute(lambda x: x.person_info.gender)
-    date_of_birth = factory.LazyAttribute(lambda x: fake.date_of_birth())  # Martin
+    date_of_birth = factory.LazyAttribute(
+        lambda _: martin.generate_random_date_of_birth()
+    )  # Martin
     cpr = factory.LazyAttribute(
         lambda x: martin.generate_cpr(x.date_of_birth, x.gender),
     )
