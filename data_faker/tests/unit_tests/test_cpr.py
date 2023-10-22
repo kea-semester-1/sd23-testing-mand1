@@ -77,21 +77,6 @@ def test_generate_seventh_cipher_range(
     assert martin.generate_seventh_cipher_range(year) == expected_ciphers
 
 
-# @pytest.mark.parametrize(
-#     "cpr, full_year",
-#     [
-#         ("000000571001", "1857"),
-#     ],
-# )
-# def test_validate_seventh_cipher(
-#     cpr: str,
-#     full_year: str,
-# ) -> None:
-#     """Test get_seventh_cipher_range."""
-#     with pytest.raises(ValueError):
-#         martin.validate_seventh_cipher(cpr, full_year)
-
-
 @pytest.mark.parametrize(
     "cpr, gender",
     [
