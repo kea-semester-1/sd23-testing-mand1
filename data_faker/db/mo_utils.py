@@ -1,5 +1,6 @@
 import random
 import re
+import string
 
 
 def generate_phone_number() -> str:
@@ -123,3 +124,43 @@ def generate_valid_phone_number() -> str:
         return generate_valid_phone_number()
 
     return phone_number
+
+
+def generate_door_value() -> str:
+    """Generate random door value.
+
+    choice 1: Return "th", "mf", or "tv".
+    choice 2: Return a number from 1 to 50.
+    choice 3: Return a lowercase letter optionally followed by a dash,
+              then followed by one to three numeric digits.
+    """
+    choice = random.randint(1, 3)
+
+    if choice == 1:
+        return random.choice(["th", "mf", "tv"])
+
+    if choice == 2:
+        return str(random.randint(1, 50))
+
+    letter = random.choice(string.ascii_lowercase)
+    dash = "-" if random.choice([True, False]) else ""
+    number = str(random.randint(1, 999))
+    return f"{letter}{dash}{number}"
+
+
+def validate_door_value(value: str) -> bool:
+    """Validate the format of the door value."""
+
+    if value in ["th", "mf", "tv"]:
+        return True
+
+    # Check for a number from 1 to 50
+    if re.match(r"^[1-9]$|^[1-4][0-9]$|^50$", value):
+        return True
+
+    # Check for a lowercase letter optionally followed by a dash,
+    # then followed by one to three numeric digits
+    if re.match(r"^[a-z](-?\d{1,3})$", value):
+        return True
+
+    return False
