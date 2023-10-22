@@ -85,8 +85,8 @@ class BaseFactory(Generic[TModel], factory.Factory):
     ) -> list[TModel]:
         if addresses:
             return [cls.create(address_info=address, **kwargs) for address in addresses]
-        else:
-            return [cls.create(**kwargs) for _ in range(size)]
+
+        return [cls.create(**kwargs) for _ in range(size)]
 
 
 class AddressFactory(BaseFactory[AddressDTO]):

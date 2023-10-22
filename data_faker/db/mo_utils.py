@@ -136,9 +136,5 @@ def get_address_dao(session: AsyncSession = Depends(get_db_session)) -> AddressD
     return AddressDAO(session)
 
 
-async def get_random_postal_code_and_town(
-    limit: int,
-    address_dao: AddressDAO = Depends(get_address_dao),
-) -> Address:
-    address = await address_dao.get_random_row(limit=limit)
-    return address
+def is_valid_postal_code(postal_code: int):
+    return bool(re.match("", postal_code))
