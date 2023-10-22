@@ -1,7 +1,7 @@
 import pytest
 
-from data_faker.db.factories import extract_person_info
-from data_faker.db.utils import is_valid_name
+from data_faker.malthe import extract_person_info
+from data_faker.db.db_utils import is_valid_name
 from data_faker.web.dtos.person_info_dto import PersonInfoDTO
 
 

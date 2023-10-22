@@ -1,6 +1,6 @@
 import pytest
 
-from data_faker.db.utils import is_valid_number
+from data_faker.db.db_utils import is_valid_number
 
 
 @pytest.mark.parametrize(

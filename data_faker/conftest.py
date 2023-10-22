@@ -12,7 +12,7 @@ from sqlalchemy.ext.asyncio import (
 )
 
 from data_faker.db.dependencies import get_db_session
-from data_faker.db.utils import create_database, drop_database
+from data_faker.db.db_utils import create_database, drop_database
 from data_faker.settings import settings
 from data_faker.web.application import get_app
 import sqlparse
