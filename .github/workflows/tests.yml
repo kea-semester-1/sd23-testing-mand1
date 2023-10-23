@@ -77,7 +77,7 @@ jobs:
         env:
           POETRY_VIRTUALENVS_CREATE: false
       - name: Run pytest check
-        run: poetry run pytest -vv --cov="data_faker" --cov-report=xml.
+        run: poetry run pytest -vv --cov="data_faker" --cov-report=xml
 
         env:
           DATA_FAKER_HOST: "0.0.0.0"
