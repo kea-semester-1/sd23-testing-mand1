@@ -5,7 +5,9 @@ import json
 from functools import cache
 import re
 from data_faker.db.enums import Gender
+from faker import Faker
 
+fake = Faker("da_Dk")
 
 
 def generate_number() -> str:
@@ -93,3 +95,13 @@ def is_valid_street(name: str) -> bool:
     pattern = r"^[A-Za-zæøåÆØÅ\.][A-Za-zæøåÆØÅ\. ]*[A-Za-zæøåÆØÅ\.]$"
 
     return bool(re.match(pattern, name))
+
+
+def generate_valid_street() -> str:
+    """Generates a valid street name."""
+    street = str(fake.street_name())
+
+    if not is_valid_street(street):
+        return generate_valid_street()
+
+    return street

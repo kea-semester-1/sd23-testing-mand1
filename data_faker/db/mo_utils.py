@@ -176,7 +176,7 @@ def generate_door_value() -> str:
     return f"{letter}{dash}{number}"
 
 
-def validate_door_value(value: str) -> bool:
+def is_valid_door_value(value: str) -> bool:
     """Validate the format of the door value."""
 
     if value in ["th", "mf", "tv"]:
@@ -192,3 +192,13 @@ def validate_door_value(value: str) -> bool:
         return True
 
     return False
+
+
+def generate_valid_door_value() -> str:
+    """Generates a valid door value."""
+    door = generate_door_value()
+
+    if not is_valid_door_value(door):
+        return generate_valid_door_value()
+
+    return door
