@@ -13,7 +13,6 @@ from data_faker.db import mo_utils as utils
 from data_faker.db.enums import Gender
 from data_faker.web.dtos.address_dto import AddressDTO
 from data_faker.web.dtos.fake_info_dto import FakeInfoDTO
-from data_faker.db import mo_utils as utils
 from data_faker.db.models.models import Address
 
 from data_faker.web.dtos.person_info_dto import PersonInfoDTO
@@ -94,13 +93,15 @@ class BaseFactory(Generic[TModel], factory.Factory):
         abstract = True
 
     @classmethod
-    def create(cls, **kwargs: Any) -> TModel:
+    def create(cls, address_info: Address | None = None, **kwargs: Any) -> TModel:
         """Create an instance of the associated model."""
+        if address_info:
+            kwargs["address_info"] = address_info
         return cls._generate("create", kwargs)
 
     @classmethod
     def create_batch(
-        cls, size: int, addresses: list[Address] = None, **kwargs: Any
+        cls, size: int, addresses: list[Address] | None = None, **kwargs: Any
     ) -> list[TModel]:
         if addresses:
             return [cls.create(address_info=address, **kwargs) for address in addresses]
@@ -118,17 +119,20 @@ class AddressFactory(BaseFactory[AddressDTO]):
     number = factory.LazyAttribute(lambda x: generate_number())
     door = factory.LazyAttribute(lambda x: str(fake.building_number()))  # Mo
     floor = factory.LazyAttribute(lambda x: generate_floor())
-    town = factory.Maybe(
-        factory.LazyAttribute(lambda obj: obj.town is not None),
-        yes_declaration=factory.SelfAttribute("..town"),
-        no_declaration=factory.LazyAttribute(lambda x: str(fake.city_name())),
-    )
 
-    postal_code = factory.Maybe(
-        factory.LazyAttribute(lambda obj: obj.postal_code is not None),
-        yes_declaration=factory.SelfAttribute("..postal_code"),
-        no_declaration=factory.LazyAttribute(lambda x: int(fake.postcode())),
-    )
+    @factory.lazy_attribute
+    def town(self) -> str:
+        # If the factory has an attribute "address_info"
+        if hasattr(self, "address_info") and self.address_info:
+            return self.address_info.town
+        return str(fake.city_name())
+
+    @factory.lazy_attribute
+    def postal_code(self) -> int:
+        # If the factory has an attribute "address_info"
+        if hasattr(self, "address_info") and self.address_info:
+            return self.address_info.postal_code
+        return int(fake.postcode())
 
 
 class FakeInfoFactory(BaseFactory[FakeInfoDTO]):
@@ -138,11 +142,11 @@ class FakeInfoFactory(BaseFactory[FakeInfoDTO]):
         model = FakeInfoDTO
 
     person_info = factory.LazyAttribute(
-        lambda x: random.choice(extract_person_info("input_files/person-names.json"))
+        lambda _: random.choice(extract_person_info("input_files/person-names.json")),
     )
-    first_name = factory.LazyAttribute(lambda x: x.person_info["name"])
-    last_name = factory.LazyAttribute(lambda x: x.person_info["surname"])
-    gender = factory.LazyAttribute(lambda x: x.person_info["gender"])
+    first_name = factory.LazyAttribute(lambda x: x.person_info.name)
+    last_name = factory.LazyAttribute(lambda x: x.person_info.surname)
+    gender = factory.LazyAttribute(lambda x: x.person_info.gender)
     date_of_birth = factory.LazyAttribute(lambda x: fake.date_of_birth())  # Martin
     cpr = factory.LazyAttribute(
         lambda x: martin.generate_cpr(x.date_of_birth, x.gender),

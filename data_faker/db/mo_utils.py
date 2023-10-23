@@ -4,9 +4,7 @@ from data_faker.db.dao.address_dao import AddressDAO
 from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from data_faker.db.models.models import Address
 from data_faker.db.dependencies import get_db_session
-import asyncio
 import string
 
 
@@ -134,6 +132,7 @@ def generate_valid_phone_number() -> str:
 
 
 def get_address_dao(session: AsyncSession = Depends(get_db_session)) -> AddressDAO:
+    """Get address dao."""
     return AddressDAO(session)
 
 
