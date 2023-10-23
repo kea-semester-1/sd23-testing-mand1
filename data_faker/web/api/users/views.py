@@ -17,7 +17,7 @@ async def factory_demo_multiple(
 ) -> list[FakeInfoDTO]:
     """Create fake info batch demo."""
     addresses = await address_dao.get_random_row(limit=limit)
-    return FakeInfoFactory.create_batch(limit, addresses=addresses)
+    return FakeInfoFactory.create_batch(limit, address_info=addresses)
 
 
 @router.get("/factory-demo")
