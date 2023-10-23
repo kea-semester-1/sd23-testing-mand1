@@ -1,4 +1,4 @@
-from data_faker.db.mo_utils import is_valid_phone_number
+from data_faker.db.utils import is_valid_phone_number
 from data_faker.constants import VALID_PHONE_PREFIXES
 import pytest
 

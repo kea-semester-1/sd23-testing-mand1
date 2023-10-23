@@ -1,5 +1,5 @@
 import pytest
-from data_faker.db.mo_utils import is_valid_door_value
+from data_faker.db.utils import is_valid_door_value
 
 
 @pytest.mark.parametrize(

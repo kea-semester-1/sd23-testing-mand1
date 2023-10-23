@@ -2,7 +2,7 @@ import pytest
 from data_faker.db.dao.address_dao import AddressDAO
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from data_faker.db import mo_utils as utils
+from data_faker.db import utils as utils
 
 
 @pytest.mark.anyio
