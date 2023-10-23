@@ -1,6 +1,7 @@
 import pytest
 
 from data_faker import malthe
+from data_faker.malthe import is_valid_number
 
 
 @pytest.mark.parametrize(
@@ -22,3 +23,14 @@ from data_faker import malthe
 def test_validate_number(number_value: str, expected: bool) -> None:
     """Testing if the function works."""
     assert malthe.is_valid_number(number_value) == expected
+
+def test_validate_number_with_none():
+    """Testing if the function raises ValueError for None."""
+    with pytest.raises(ValueError, match="Value must be of type string"):
+        malthe.is_valid_number(None)
+
+@pytest.mark.parametrize("number_value", [25, 0, 1, -1])
+def test_validate_number_with_numeric(number_value):
+    """Testing if the function raises ValueError for None."""
+    with pytest.raises(ValueError, match="Value must be of type string"):
+        malthe.is_valid_number(number_value)
