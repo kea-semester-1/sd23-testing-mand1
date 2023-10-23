@@ -35,6 +35,7 @@ from data_faker.db.mo_utils import is_valid_door_value
         ("a-1000", False),  # Too many digits
         ("a-", False),  # No integers after the dash
         ("Z99", False),  # Uppercase letters
+        (None, False),
     ],
 )
 def test_validate_door_value(value: str, expected: bool) -> None:

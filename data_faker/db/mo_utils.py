@@ -5,6 +5,7 @@ from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from data_faker.db.dependencies import get_db_session
+from data_faker.constants import VALID_PHONE_PREFIXES
 import string
 
 
@@ -14,107 +15,16 @@ def generate_phone_number() -> str:
 
 
 def is_valid_phone_number(number: str) -> bool:
-    """Checks if number is valid,."""
-    valid_prefixes = [
-        "2",
-        "30",
-        "31",
-        "40",
-        "41",
-        "42",
-        "50",
-        "51",
-        "52",
-        "53",
-        "60",
-        "61",
-        "71",
-        "81",
-        "91",
-        "92",
-        "93",
-        "342",
-        "344",
-        "345",
-        "346",
-        "347",
-        "348",
-        "349",
-        "356",
-        "357",
-        "359",
-        "362",
-        "365",
-        "366",
-        "389",
-        "398",
-        "431",
-        "441",
-        "462",
-        "466",
-        "468",
-        "472",
-        "474",
-        "476",
-        "478",
-        "485",
-        "486",
-        "488",
-        "489",
-        "493",
-        "494",
-        "495",
-        "496",
-        "498",
-        "499",
-        "542",
-        "543",
-        "545",
-        "551",
-        "552",
-        "556",
-        "571",
-        "572",
-        "573",
-        "574",
-        "577",
-        "579",
-        "584",
-        "586",
-        "587",
-        "589",
-        "597",
-        "598",
-        "627",
-        "629",
-        "641",
-        "649",
-        "658",
-        "662",
-        "663",
-        "664",
-        "665",
-        "667",
-        "692",
-        "693",
-        "694",
-        "697",
-        "771",
-        "772",
-        "782",
-        "783",
-        "785",
-        "786",
-        "788",
-        "789",
-        "826",
-        "827",
-        "829",
-    ]
+    """Checks if phone_number is valid."""
+
+    if number is None:
+        return False
 
     pattern = (
         "^(?:"
-        + "|".join([f"{prefix}\\d{{{8 - len(prefix)}}}" for prefix in valid_prefixes])
+        + "|".join(
+            [f"{prefix}\\d{{{8 - len(prefix)}}}" for prefix in VALID_PHONE_PREFIXES]
+        )
         + ")$"
     )
 
@@ -143,10 +53,11 @@ def is_valid_postal_code(postal_code: int) -> bool:
 
 def is_valid_town_name(town_name: str) -> bool:
     """Validates if a given town name is a valid Danish town name."""
-    town_name = town_name.strip()
 
     if not town_name:
         return False
+
+    town_name = town_name.strip()
 
     # allows for spaces between words in town names, e.g., "Frederiksberg C"
     pattern = re.compile(r"^[a-zA-ZæøåÆØÅ\s]+$")
@@ -178,6 +89,9 @@ def generate_door_value() -> str:
 
 def is_valid_door_value(value: str) -> bool:
     """Validate the format of the door value."""
+
+    if not value:
+        return False
 
     if value in ["th", "mf", "tv"]:
         return True
