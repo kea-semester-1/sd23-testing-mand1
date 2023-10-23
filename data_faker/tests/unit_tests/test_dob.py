@@ -6,7 +6,7 @@ from data_faker import martin
 from data_faker import constants
 
 
-def test_gen_date() -> None:
+def test_generate_dob() -> None:
     """Test gen_date."""
     date = martin.generate_random_date_of_birth()
     assert isinstance(date, datetime)
@@ -26,7 +26,6 @@ def test_gen_date() -> None:
 )
 def test_valid_date_format(date: datetime) -> None:
     """Test validate_date_format."""
-    date = martin.generate_random_date_of_birth()
     assert martin.validate_date_format(date)
 
 
@@ -37,6 +36,9 @@ def test_valid_date_format(date: datetime) -> None:
         datetime(1857, 1, 1),
         datetime(2058, 1, 1),
         datetime(2059, 1, 1),
+        None,
+        0,
+        "",
     ],
 )
 def test_invalid_date_format(date: datetime) -> None:

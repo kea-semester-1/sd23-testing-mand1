@@ -1,6 +1,6 @@
 import pytest
 
-from data_faker.db.db_utils import is_valid_floor
+from data_faker import malthe
 
 
 @pytest.mark.parametrize(
@@ -19,4 +19,4 @@ from data_faker.db.db_utils import is_valid_floor
 )
 def test_validate_floor(floor_value: str, expected: bool) -> None:
     """Testing if the function works."""
-    assert is_valid_floor(floor_value) == expected
+    assert malthe.is_valid_floor(floor_value) == expected

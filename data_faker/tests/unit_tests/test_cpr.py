@@ -5,6 +5,7 @@ import pytest
 from data_faker import martin
 from data_faker.db.enums import Gender
 from data_faker import constants
+from typing import Any
 
 
 def _create_date(day: int, month: int, year: int) -> datetime:
@@ -12,7 +13,7 @@ def _create_date(day: int, month: int, year: int) -> datetime:
     return datetime(year, month, day)
 
 
-def _cpr_year_with_seventh(seventh: int, full_year: int) -> tuple[str, str]:
+def _cpr_year_with_seventh(seventh: Any, full_year: int) -> tuple[str, str]:
     """Create CPR with seventh cipher."""
     return (f"000000{seventh}000", str(full_year))
 
@@ -45,6 +46,9 @@ def test_valid_cpr_format(
         "04070100000",
         "281004971",
         "1231040000",
+        "",
+        None,
+        0,
     ],
 )
 def test_invalid_cpr_format(cpr: str) -> None:
@@ -111,6 +115,12 @@ def test_valid_gender_match(cpr: str, gender: Gender) -> None:
         ("0000000004", Gender.male),
         ("0000000006", Gender.male),
         ("0000000008", Gender.male),
+        ("0000000008", None),
+        ("000000000x", Gender.female),
+        ("00000000008", Gender.female),
+        ("000000008", Gender.female),
+        (None, Gender.female),
+        ("", Gender.female),
     ],
 )
 def test_invalid_gender_match(cpr: str, gender: Gender) -> None:
@@ -150,6 +160,9 @@ def test_valid_seventh_cipher(cpr: str, full_year: str) -> None:
         _cpr_year_with_seventh(-1, constants.MIN_CPR_BIRTH_YEAR),
         _cpr_year_with_seventh(1, constants.MAX_CPR_BIRTH_YEAR),
         _cpr_year_with_seventh(9, constants.MAX_CPR_BIRTH_YEAR),
+        _cpr_year_with_seventh("x", constants.MAX_CPR_BIRTH_YEAR),
+        _cpr_year_with_seventh(None, constants.MAX_CPR_BIRTH_YEAR),
+        _cpr_year_with_seventh("", constants.MAX_CPR_BIRTH_YEAR),
     ],
 )
 def test_invalid_seventh_cipher(cpr: str, full_year: str) -> None:
@@ -173,7 +186,7 @@ def test_valid_random_last_cipher(gender: Gender) -> None:
     assert last_cipher in valid_ciphers
 
 
-@pytest.mark.parametrize("gender", [Gender.male, Gender.female])
+@pytest.mark.parametrize("gender", [Gender.male, Gender.female, None, 0, ""])
 def test_invalid_random_last_cipher(gender: Gender) -> None:
     """Test invalid partitions for generate_random_last_cipher."""
     last_cipher = martin.generate_random_last_cipher(gender)
@@ -213,6 +226,10 @@ def test_valid_generate_cpr(date_of_birth: datetime, gender: Gender) -> None:
         (_create_date(1, 1, constants.MIN_CPR_BIRTH_YEAR - 2), Gender.male),
         (_create_date(1, 1, constants.MAX_CPR_BIRTH_YEAR + 1), Gender.male),
         (_create_date(1, 1, constants.MAX_CPR_BIRTH_YEAR + 2), Gender.female),
+        (_create_date(1, 1, constants.MAX_CPR_BIRTH_YEAR), None),
+        (None, Gender.female),
+        (None, None),
+        ("", 0),
     ],
 )
 def test_invalid_generate_cpr(date_of_birth: datetime, gender: Gender) -> None:
