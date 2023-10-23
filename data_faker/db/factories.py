@@ -50,10 +50,10 @@ class AddressFactory(BaseFactory[AddressDTO]):
     class Meta:
         model = AddressDTO
 
-    street = factory.LazyAttribute(lambda x: malthe.generate_valid_street())
-    number = factory.LazyAttribute(lambda x: malthe.generate_number())
-    door = factory.LazyAttribute(lambda x: utils.generate_door_value())  # Mo
-    floor = factory.LazyAttribute(lambda x: malthe.generate_floor())
+    street = factory.LazyAttribute(lambda _: malthe.generate_valid_street())
+    number = factory.LazyAttribute(lambda _: malthe.generate_number())
+    door = factory.LazyAttribute(lambda _: utils.generate_door_value())  # Mo
+    floor = factory.LazyAttribute(lambda _: malthe.generate_floor())
 
     @factory.lazy_attribute
     def town(self) -> str:

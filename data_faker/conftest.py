@@ -109,11 +109,13 @@ async def client(
     :param fastapi_app: the application.
     :yield: client for the app.
     """
-    async with AsyncClient(app=fastapi_app, base_url="http://test") as ac:
+    async with AsyncClient(
+        app=fastapi_app, base_url="http://test/api/datafaker/"
+    ) as ac:
         yield ac
 
 
-@pytest.fixture
+@pytest.fixture()
 async def address_data(dbsession: AsyncSession) -> None:
     """Loads the test db with address data."""
 
