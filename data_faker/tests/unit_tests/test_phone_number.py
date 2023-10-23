@@ -33,6 +33,7 @@ invalid_numbers = [
     # Numbers with leading zeroes
     "03000000",
     None,  # if None
+    "",  # if None
 ]
 
 
