@@ -11,6 +11,7 @@ from data_faker.db import mo_utils as utils
 from data_faker.web.dtos.address_dto import AddressDTO
 from data_faker.web.dtos.fake_info_dto import FakeInfoDTO
 from data_faker.db.models.models import Address
+from data_faker.db.db_utils import generate_valid_street
 
 fake = Faker("da_Dk")
 TModel = TypeVar("TModel", bound=BaseModel)
@@ -50,7 +51,7 @@ class AddressFactory(BaseFactory[AddressDTO]):
     class Meta:
         model = AddressDTO
 
-    street = factory.LazyAttribute(lambda x: str(fake.street_name()))
+    street = factory.LazyAttribute(lambda x: generate_valid_street())
     number = factory.LazyAttribute(lambda x: malthe.generate_number())
     door = factory.LazyAttribute(lambda x: str(fake.building_number()))  # Mo
     floor = factory.LazyAttribute(lambda x: malthe.generate_floor())

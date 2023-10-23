@@ -25,4 +25,4 @@ async def create_batch(
 ) -> list[FakeInfoDTO]:
     """Create fake info in batch."""
     addresses = await address_dao.get_random_row(limit=size)
-    return factories.FakeInfoFactory.create_batch(size, address_info=addresses)
+    return factories.FakeInfoFactory.create_batch(size=size, addresses=addresses)

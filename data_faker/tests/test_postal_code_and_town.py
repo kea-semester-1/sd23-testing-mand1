@@ -83,6 +83,8 @@ def test_postal_code_validation(postal_code: int, expected: bool) -> None:
         ("Odense ", True),
         # Empty names
         ("", False),
+        # check for dash in town name
+        ("Frederiksberg-C", False),
     ],
 )
 def test_is_valid_town_name(town_name: str, expected: bool) -> None:

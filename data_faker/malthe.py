@@ -6,6 +6,7 @@ from functools import cache
 from data_faker.db.enums import Gender
 
 
+
 def generate_number() -> str:
     """Generate a random number between 1 and 999.
     A letter might be added at the end."""

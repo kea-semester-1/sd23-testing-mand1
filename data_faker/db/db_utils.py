@@ -79,3 +79,18 @@ def is_valid_street(name: str) -> bool:
     pattern = r"^[A-Za-zæøåÆØÅ\.][A-Za-zæøåÆØÅ\. ]*[A-Za-zæøåÆØÅ\.]$"
 
     return bool(re.match(pattern, name))
+
+
+from faker import Faker
+
+fake = Faker("da_Dk")
+
+
+def generate_valid_street() -> str:
+    street = str(fake.street_name())
+
+    if not is_valid_street(street):
+        return generate_valid_street()
+
+    return street
+
