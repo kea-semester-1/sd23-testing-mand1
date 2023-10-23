@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Query, Depends
+from fastapi import APIRouter, Query
 
 from data_faker.db import factories
 from data_faker.web.dtos.fake_info_dto import FakeInfoDTO, EmbedDTO
@@ -14,13 +14,15 @@ router = APIRouter()
     "/single",
     response_model_exclude_none=True,
 )
-def get_single(
+async def get_single(
     embed: Annotated[EmbedDTO, Depends()],
+    address_dao: Annotated[AddressDAO, Depends(utils.get_address_dao)],
 ) -> FakeInfoDTO:
     """Get fake info."""
 
-    fake_info = factories.FakeInfoFactory.create()
-    address = fake_info.address
+    address = await address_dao.get_random_row()
+    fake_info = factories.FakeInfoFactory.create(address_info=address[0])
+    address = fake_info.address  # type: ignore
 
     embed_dict = embed.model_dump(exclude_none=True)
 
@@ -48,20 +50,15 @@ def get_single(
     "/batch",
     response_model_exclude_none=True,
 )
-def get_batch(
+async def get_batch(
     embed: Annotated[EmbedDTO, Depends()],
+    address_dao: Annotated[AddressDAO, Depends(utils.get_address_dao)],
     size: Annotated[int, Query(ge=1, le=100)] = 1,
 ) -> list[FakeInfoDTO]:
     """Get a batch of fake info."""
 
-    fake_infos = factories.FakeInfoFactory.create_batch(size)
-@router.get("/temp-single")
-async def create_single(
-    address_dao: AddressDAO = Depends(utils.get_address_dao),
-) -> FakeInfoDTO:
-    """Create fake info."""
-    address = await address_dao.get_random_row()
-    return factories.FakeInfoFactory.create(address_info=address[0])
+    addresses = await address_dao.get_random_row(limit=size)
+    fake_infos = factories.FakeInfoFactory.create_batch(size, addresses=addresses)
 
     embed_dict = embed.model_dump(exclude_none=True)
     fake_info_dicts: list[FakeInfoDTO] = []
@@ -92,23 +89,19 @@ async def create_single(
 
 
 @router.get("/demo-single")
-def get_demo_single() -> FakeInfoDTO:
+async def get_demo_single(
+    address_dao: AddressDAO = Depends(utils.get_address_dao),
+) -> FakeInfoDTO:
     """Demo for fake info."""
-    return factories.FakeInfoFactory.create()
+    address = await address_dao.get_random_row()
+    return factories.FakeInfoFactory.create(address_info=address[0])
 
 
 @router.get("/demo-batch")
-def get_demo_batch(
-    size: Annotated[int, Query(ge=1, le=100)] = 1,
-) -> list[FakeInfoDTO]:
-    """Demo for a batch of fake info."""
-    return factories.FakeInfoFactory.create_batch(size)
-  
-@router.get("/temp-batch")
 async def create_batch(
     size: Annotated[int, Query(ge=1, le=100)],
     address_dao: AddressDAO = Depends(utils.get_address_dao),
 ) -> list[FakeInfoDTO]:
-    """Create fake info in batch."""
+    """Demo for fake info in batch."""
     addresses = await address_dao.get_random_row(limit=size)
     return factories.FakeInfoFactory.create_batch(size=size, addresses=addresses)

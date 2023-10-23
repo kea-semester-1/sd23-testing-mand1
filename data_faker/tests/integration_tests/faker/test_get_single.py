@@ -1,11 +1,12 @@
 import pytest
 from httpx import AsyncClient
+from typing import Any
 
 URL = "/faker/single"
 
 
 @pytest.mark.anyio
-async def test_get_single(client: AsyncClient) -> None:
+async def test_get_single(client: AsyncClient, address_data: Any) -> None:
     """Test getting a single faked person data: 200."""
 
     response = await client.get(URL)
@@ -14,7 +15,7 @@ async def test_get_single(client: AsyncClient) -> None:
 
 
 @pytest.mark.anyio
-async def test_get_single_with_embeds(client: AsyncClient) -> None:
+async def test_get_single_with_embeds(client: AsyncClient, address_data: Any) -> None:
     """Test getting a single faked person data with embeds: 200."""
 
     embed_params = {
@@ -40,7 +41,9 @@ async def test_get_single_with_embeds(client: AsyncClient) -> None:
 
 
 @pytest.mark.anyio
-async def test_get_single_with_embeds_address(client: AsyncClient) -> None:
+async def test_get_single_with_embeds_address(
+    client: AsyncClient, address_data: Any
+) -> None:
     """Test getting a single faked person data with address attribute embedded: 200."""
 
     embed_params = {

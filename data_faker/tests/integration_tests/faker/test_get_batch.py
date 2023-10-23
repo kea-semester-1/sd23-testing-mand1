@@ -1,11 +1,12 @@
 import pytest
 from httpx import AsyncClient
+from typing import Any
 
 URL = "/faker/batch"
 
 
 @pytest.mark.anyio
-async def test_get_batch(client: AsyncClient) -> None:
+async def test_get_batch(client: AsyncClient, address_data: Any) -> None:
     """Test getting a batch of faked person data: 200."""
 
     response = await client.get(URL, params={"size": 10})
@@ -14,7 +15,7 @@ async def test_get_batch(client: AsyncClient) -> None:
 
 
 @pytest.mark.anyio
-async def test_get_batch_with_embeds(client: AsyncClient) -> None:
+async def test_get_batch_with_embeds(client: AsyncClient, address_data: Any) -> None:
     """Test getting a batch of faked person data with embeds: 200."""
 
     embed_params = {
@@ -42,7 +43,10 @@ async def test_get_batch_with_embeds(client: AsyncClient) -> None:
 
 
 @pytest.mark.anyio
-async def test_get_batch_with_embeds_address(client: AsyncClient) -> None:
+async def test_get_batch_with_embeds_address(
+    client: AsyncClient,
+    address_data: Any,
+) -> None:
     """Test getting a batch of data with address attribute embedded: 200."""
 
     embed_params = {

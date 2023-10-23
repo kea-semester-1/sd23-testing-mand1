@@ -115,7 +115,7 @@ async def client(
         yield ac
 
 
-@pytest.fixture
+@pytest.fixture()
 async def address_data(dbsession: AsyncSession) -> None:
     """Loads the test db with address data."""
 
