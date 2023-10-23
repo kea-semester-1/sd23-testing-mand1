@@ -54,6 +54,8 @@ async def test_address_dao_returning_valid_town_name(
         (302, False),
         (40001, False),
         (None, False),
+        ("", False),
+        (" ", False),
     ],
 )
 def test_postal_code_validation(postal_code: int, expected: bool) -> None:
@@ -92,3 +94,4 @@ def test_postal_code_validation(postal_code: int, expected: bool) -> None:
 def test_is_valid_town_name(town_name: str, expected: bool) -> None:
     """Test for valid town name."""
     assert utils.is_valid_town_name(town_name) == expected
+
