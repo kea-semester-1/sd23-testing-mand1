@@ -67,13 +67,17 @@ def is_valid_name(name: str) -> bool:
     """
     Validates if the given name contains only English and Danish letters.
     """
-    pattern = r"^[A-Za-zæøåÆØÅ\.]([A-Za-zæøåÆØÅ\. ]|-[^-]+|[^-]+-)*[A-Za-zæøåÆØÅ\.]$"
+    if name is None or not isinstance(name, str):
+        raise ValueError("Value must be of type string")
 
+    pattern = r"^[A-Za-zæøåÆØÅ\.]([A-Za-zæøåÆØÅ\. ]|-[^-]+|[^-]+-)*[A-Za-zæøåÆØÅ\.]$"
     return bool(re.match(pattern, name))
 
 
 def is_valid_floor(s: str) -> bool:
     """Check if the floor generated is valid."""
+    if s is None:
+        raise ValueError("Value cannot be of type None")
     if s == "st":
         return True
     if s.isdigit() and 1 <= int(s) <= 99:
@@ -83,6 +87,8 @@ def is_valid_floor(s: str) -> bool:
 
 def is_valid_number(s: str) -> bool:
     """Check if the number generated is valid."""
+    if s is None or not isinstance(s, str):
+        raise ValueError("Value must be of type string")
     if s.isdigit() and 1 <= int(s) <= 999:
         return True
     if s[-1] in string.ascii_uppercase and s[:-1].isdigit() and 1 <= int(s[:-1]) <= 999:
@@ -92,6 +98,8 @@ def is_valid_number(s: str) -> bool:
 
 def is_valid_street(name: str) -> bool:
     """Check if the street name generated is valid."""
+    if name is None or not isinstance(name, str):
+        raise ValueError("Value must be of type string")
     pattern = r"^[A-Za-zæøåÆØÅ\.][A-Za-zæøåÆØÅ\. ]*[A-Za-zæøåÆØÅ\.]$"
 
     return bool(re.match(pattern, name))
