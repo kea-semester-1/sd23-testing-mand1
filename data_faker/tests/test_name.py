@@ -40,14 +40,15 @@ def test_invalid_names(name: str) -> None:
     """Testing if the function works."""
     assert not malthe.is_valid_name(name), f"Failed for name: {name}"
 
-def test_validate_name_with_none():
+
+def test_validate_name_with_none() -> None:
     """Testing if the function raises ValueError for None."""
     with pytest.raises(ValueError, match="Value must be of type string"):
         malthe.is_valid_name(None)
 
 
-@pytest.mark.parametrize("name", [25, 0, 25.25])
-def test_validate_name_with_numeric(name):
+@pytest.mark.parametrize("name", [25, 0, 25.25, -1, -999])
+def test_validate_name_with_numeric(name: int | float) -> None:
+    """Testing if the function raises errors with numeric values outside of string."""
     with pytest.raises(ValueError, match="Value must be of type string"):
         is_valid_name(name)
-

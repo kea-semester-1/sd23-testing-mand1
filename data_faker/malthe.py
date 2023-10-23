@@ -67,7 +67,6 @@ def is_valid_name(name: str) -> bool:
     if name is None or not isinstance(name, str):
         raise ValueError("Value must be of type string")
 
-
     pattern = r"^[A-Za-zæøåÆØÅ\.]([A-Za-zæøåÆØÅ\. ]|-[^-]+|[^-]+-)*[A-Za-zæøåÆØÅ\.]$"
     return bool(re.match(pattern, name))
 
