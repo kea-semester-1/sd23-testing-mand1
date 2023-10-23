@@ -1,5 +1,10 @@
 import random
 import re
+from data_faker.db.dao.address_dao import AddressDAO
+from fastapi import Depends
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from data_faker.db.dependencies import get_db_session
 import string
 
 
@@ -126,6 +131,29 @@ def generate_valid_phone_number() -> str:
     return phone_number
 
 
+def get_address_dao(session: AsyncSession = Depends(get_db_session)) -> AddressDAO:
+    """Get address dao."""
+    return AddressDAO(session)
+
+
+def is_valid_postal_code(postal_code: int) -> bool:
+    """Check if value is valid."""
+    return bool(re.match(r"^\d{4}$", str(postal_code)))
+
+
+def is_valid_town_name(town_name: str) -> bool:
+    """Validates if a given town name is a valid Danish town name."""
+    town_name = town_name.strip()
+
+    if not town_name:
+        return False
+
+    # allows for spaces between words in town names, e.g., "Frederiksberg C"
+    pattern = re.compile(r"^[a-zA-ZæøåÆØÅ\s]+$")
+
+    return bool(pattern.match(town_name))
+
+
 def generate_door_value() -> str:
     """Generate random door value.
 
@@ -148,7 +176,7 @@ def generate_door_value() -> str:
     return f"{letter}{dash}{number}"
 
 
-def validate_door_value(value: str) -> bool:
+def is_valid_door_value(value: str) -> bool:
     """Validate the format of the door value."""
 
     if value in ["th", "mf", "tv"]:
@@ -164,3 +192,13 @@ def validate_door_value(value: str) -> bool:
         return True
 
     return False
+
+
+def generate_valid_door_value() -> str:
+    """Generates a valid door value."""
+    door = generate_door_value()
+
+    if not is_valid_door_value(door):
+        return generate_valid_door_value()
+
+    return door

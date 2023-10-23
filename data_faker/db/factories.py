@@ -10,6 +10,7 @@ from data_faker import malthe
 from data_faker.db import mo_utils as utils
 from data_faker.web.dtos.address_dto import AddressDTO
 from data_faker.web.dtos.fake_info_dto import FakeInfoDTO
+from data_faker.db.models.models import Address
 
 fake = Faker("da_Dk")
 TModel = TypeVar("TModel", bound=BaseModel)
@@ -27,13 +28,19 @@ class BaseFactory(Generic[TModel], factory.Factory):
         abstract = True
 
     @classmethod
-    def create(cls, **kwargs: Any) -> TModel:
+    def create(cls, address_info: Address | None = None, **kwargs: Any) -> TModel:
         """Create an instance of the associated model."""
+        if address_info:
+            kwargs["address_info"] = address_info
         return cls._generate("create", kwargs)
 
     @classmethod
-    def create_batch(cls, size: int, **kwargs: Any) -> list[TModel]:
-        """Create a batch of instances of the associated model."""
+    def create_batch(
+        cls, size: int, addresses: list[Address] | None = None, **kwargs: Any
+    ) -> list[TModel]:
+        if addresses:
+            return [cls.create(address_info=address, **kwargs) for address in addresses]
+
         return [cls.create(**kwargs) for _ in range(size)]
 
 
@@ -43,12 +50,24 @@ class AddressFactory(BaseFactory[AddressDTO]):
     class Meta:
         model = AddressDTO
 
-    street = factory.LazyAttribute(lambda _: str(fake.street_name()))
-    number = factory.LazyAttribute(lambda _: malthe.generate_number())
-    door = factory.LazyAttribute(lambda _: str(fake.building_number()))  # Mo
-    floor = factory.LazyAttribute(lambda _: malthe.generate_floor())
-    town = factory.LazyAttribute(lambda _: str(fake.city_name()))  # Mo
-    postal_code = factory.LazyAttribute(lambda x: int(fake.postcode()))  # Mo
+    street = factory.LazyAttribute(lambda x: malthe.generate_valid_street())
+    number = factory.LazyAttribute(lambda x: malthe.generate_number())
+    door = factory.LazyAttribute(lambda x: utils.generate_door_value())  # Mo
+    floor = factory.LazyAttribute(lambda x: malthe.generate_floor())
+
+    @factory.lazy_attribute
+    def town(self) -> str:
+        # If the factory has an attribute "address_info"
+        if hasattr(self, "address_info") and self.address_info:
+            return self.address_info.town
+        return str(fake.city_name())
+
+    @factory.lazy_attribute
+    def postal_code(self) -> int:
+        # If the factory has an attribute "address_info"
+        if hasattr(self, "address_info") and self.address_info:
+            return self.address_info.postal_code
+        return int(fake.postcode())
 
 
 class FakeInfoFactory(BaseFactory[FakeInfoDTO]):
@@ -74,4 +93,8 @@ class FakeInfoFactory(BaseFactory[FakeInfoDTO]):
     phone_number = factory.LazyAttribute(
         lambda _: utils.generate_valid_phone_number(),
     )  # Mo
-    address = factory.SubFactory(AddressFactory)  # Martin
+    address = factory.SubFactory(
+        AddressFactory,
+        town=factory.SelfAttribute("..address_info.town"),
+        postal_code=factory.SelfAttribute("..address_info.postal_code"),
+    )

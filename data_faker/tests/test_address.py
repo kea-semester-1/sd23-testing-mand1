@@ -22,7 +22,7 @@ async def test_get_random_address_return_model(
     address_dao = AddressDAO(dbsession)
     address = await address_dao.get_random_row()
 
-    assert type(address) == Address
+    assert type(address[0]) == Address
 
 
 @pytest.mark.anyio
@@ -38,7 +38,7 @@ async def test_get_random_address_different_row(
 
     assert address1 and address2
 
-    assert address1.postal_code != address2.postal_code
+    assert address1[0].postal_code != address2[0].postal_code
 
 
 @pytest.mark.anyio
