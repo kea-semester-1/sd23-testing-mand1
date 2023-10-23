@@ -3,8 +3,8 @@
 [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=testing-mand1_data-faker&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=testing-mand1_data-faker)
 [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=testing-mand1_data-faker&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=testing-mand1_data-faker)
 [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=testing-mand1_data-faker&metric=bugs)](https://sonarcloud.io/summary/new_code?id=testing-mand1_data-faker)
-# data_faker
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=testing-mand1_data-faker&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=testing-mand1_data-faker)
+# data_faker
 
 This project is the first mandatory assignment, for the SD23 testing subject.
 
