@@ -2,13 +2,13 @@ from datetime import datetime
 
 import pytest
 
-from data_faker import martin
 from data_faker import constants
+from data_faker.db.utils import generate_random_date_of_birth, validate_date_format
 
 
 def test_generate_dob() -> None:
     """Test gen_date."""
-    date = martin.generate_random_date_of_birth()
+    date = generate_random_date_of_birth()
     assert isinstance(date, datetime)
     assert date.year >= constants.MIN_CPR_BIRTH_YEAR
     assert date.year <= constants.MAX_CPR_BIRTH_YEAR
@@ -26,7 +26,7 @@ def test_generate_dob() -> None:
 )
 def test_valid_date_format(date: datetime) -> None:
     """Test validate_date_format."""
-    assert martin.validate_date_format(date)
+    assert validate_date_format(date)
 
 
 @pytest.mark.parametrize(
@@ -44,4 +44,4 @@ def test_valid_date_format(date: datetime) -> None:
 def test_invalid_date_format(date: datetime) -> None:
     """Test validate_date_format."""
     with pytest.raises(ValueError):
-        martin.validate_date_format(date)
+        validate_date_format(date)

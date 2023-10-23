@@ -25,3 +25,8 @@ class AddressDAO:
             raise NoResultFound("No row found.")
 
         return list(addresses)
+
+
+def get_address_dao(session: AsyncSession = Depends(get_db_session)) -> AddressDAO:
+    """Get address dao."""
+    return AddressDAO(session)
