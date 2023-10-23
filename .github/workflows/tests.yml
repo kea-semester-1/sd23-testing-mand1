@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-      - branch-* 
+      - branch-*
   pull_request:
     types: [opened, synchronize, reopened]
 
@@ -72,14 +72,14 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
-        python-version: '3.9'
+        python-version: 3.11.3
     - name: Install deps
       uses: knowsuchagency/poetry-install@v1
       env:
         POETRY_VIRTUALENVS_CREATE: false
     - name: Run pytest check
       run: poetry run pytest -vv --cov="data_faker" .
-  
+
       env:
         DATA_FAKER_HOST: "0.0.0.0"
         DATA_FAKER_DB_HOST: localhost

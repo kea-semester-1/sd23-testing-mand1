@@ -1,5 +1,5 @@
 import pytest
-from data_faker.db.mo_utils import validate_door_value
+from data_faker.db.mo_utils import is_valid_door_value
 
 
 @pytest.mark.parametrize(
@@ -34,8 +34,13 @@ from data_faker.db.mo_utils import validate_door_value
         ("0a-01", False),  # Leading zeros
         ("a-1000", False),  # Too many digits
         ("a-", False),  # No integers after the dash
+        ("Z99", False),  # Uppercase letters
+        # Other
+        (None, False), # None value
+        ("", False),# Empty string
+        (" ", False),# Empty string with a space
     ],
 )
 def test_validate_door_value(value: str, expected: bool) -> None:
     """Test the validate door function."""
-    assert validate_door_value(value) == expected
+    assert is_valid_door_value(value) == expected
