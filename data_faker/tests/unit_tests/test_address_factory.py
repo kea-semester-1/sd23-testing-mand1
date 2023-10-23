@@ -19,8 +19,6 @@ async def test_address_factory_attribute(
     address = await address_dao.get_random_row()
 
     full_address = AddressFactory.create(address=address[0])
-    print(address[0].postal_code)
-    print(full_address.__dict__)
     assert isinstance(full_address, AddressDTO)
 
     if attribute == "postal_code":

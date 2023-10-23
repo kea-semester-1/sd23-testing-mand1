@@ -51,5 +51,4 @@ async def test_get_random_address_no_addresses_loaded(
     address_dao = AddressDAO(dbsession)
 
     with pytest.raises(NoResultFound, match="No row found."):
-        address = await address_dao.get_random_row()
-        print(address)
+        await address_dao.get_random_row()
