@@ -29,6 +29,12 @@ def generate_seventh_cipher_range(year: str) -> list[str]:
 
 def validate_cpr_format(cpr: str) -> bool:
     """Validate the format of a CPR number."""
+
+    invalid_input = cpr is None or not isinstance(cpr, str)
+
+    if invalid_input:
+        raise ValueError("Invalid input.")
+
     if len(cpr) != 10:
         raise ValueError(f"Invalid CPR number length. Length: {len(cpr)} ")
 
@@ -53,6 +59,13 @@ def validate_gender_match(cpr: str, gender: Gender) -> bool:
     If male: last cipher is odd
     If female: last cipher is even
     """
+
+    if gender is None or cpr is None:
+        raise ValueError("Invalid input.")
+
+    if len(cpr) != 10:
+        raise ValueError(f"Invalid CPR number length. Length: {len(cpr)} ")
+
     last_cipher_is_even = int(cpr[-1]) % 2 == 0
 
     gender_mismatch = (
@@ -94,6 +107,16 @@ def generate_random_last_cipher(gender: Gender) -> str:
 
 def generate_cpr(date_of_birth: datetime, gender: Gender) -> str:
     """Generate a CPR number based on date of birth and gender."""
+
+    invalid_input = (
+        date_of_birth is None
+        or gender is None
+        or not isinstance(date_of_birth, datetime)
+        or not isinstance(gender, Gender)
+    )
+
+    if invalid_input:
+        raise ValueError("Invalid input.")
 
     invalid_date_range = (
         date_of_birth.year < constants.MIN_CPR_BIRTH_YEAR
@@ -138,6 +161,9 @@ def generate_random_date_of_birth() -> datetime:
 
 def validate_date_format(date: datetime) -> bool:
     """Validate a date of birth."""
+
+    if date is None or not isinstance(date, datetime):
+        raise ValueError("Invalid input.")
 
     invalid_date_range = (
         date.year < constants.MIN_CPR_BIRTH_YEAR
