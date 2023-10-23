@@ -2,10 +2,18 @@ from datetime import datetime
 
 import pytest
 
-from data_faker import martin
 from data_faker.db.enums import Gender
 from data_faker import constants
 from typing import Any
+
+from data_faker.db.utils import (
+    validate_cpr_format,
+    generate_cpr,
+    validate_gender_match,
+    validate_seventh_cipher,
+    generate_random_last_cipher,
+    generate_seventh_cipher_range,
+)
 
 
 def _create_date(day: int, month: int, year: int) -> datetime:
@@ -33,7 +41,7 @@ def test_valid_cpr_format(
 ) -> None:
     """Test get_seventh_cipher_range."""
 
-    assert martin.validate_cpr_format(cpr) is True
+    assert validate_cpr_format(cpr) is True
 
 
 @pytest.mark.parametrize(
@@ -54,7 +62,7 @@ def test_valid_cpr_format(
 def test_invalid_cpr_format(cpr: str) -> None:
     """Test get_seventh_cipher_range."""
     with pytest.raises(ValueError):
-        martin.validate_cpr_format(cpr)
+        validate_cpr_format(cpr)
 
 
 @pytest.mark.parametrize(
@@ -78,7 +86,7 @@ def test_generate_seventh_cipher_range(
 ) -> None:
     """Test generate_seventh_cipher_range."""
 
-    assert martin.generate_seventh_cipher_range(year) == expected_ciphers
+    assert generate_seventh_cipher_range(year) == expected_ciphers
 
 
 @pytest.mark.parametrize(
@@ -99,7 +107,7 @@ def test_generate_seventh_cipher_range(
 def test_valid_gender_match(cpr: str, gender: Gender) -> None:
     """Test valid partitions for validate_gender_match."""
 
-    assert martin.validate_gender_match(cpr, gender)
+    assert validate_gender_match(cpr, gender)
 
 
 @pytest.mark.parametrize(
@@ -127,7 +135,7 @@ def test_invalid_gender_match(cpr: str, gender: Gender) -> None:
     """Test valid partitions for validate_gender_match."""
 
     with pytest.raises(ValueError):
-        martin.validate_gender_match(cpr, gender)
+        validate_gender_match(cpr, gender)
 
 
 @pytest.mark.parametrize(
@@ -149,7 +157,7 @@ def test_invalid_gender_match(cpr: str, gender: Gender) -> None:
 )
 def test_valid_seventh_cipher(cpr: str, full_year: str) -> None:
     """Test valid partitions for validate_seventh_cipher."""
-    assert martin.validate_seventh_cipher(cpr, full_year)
+    assert validate_seventh_cipher(cpr, full_year)
 
 
 @pytest.mark.parametrize(
@@ -169,13 +177,13 @@ def test_invalid_seventh_cipher(cpr: str, full_year: str) -> None:
     """Test valid partitions for validate_seventh_cipher."""
 
     with pytest.raises(ValueError):
-        martin.validate_seventh_cipher(cpr, full_year)
+        validate_seventh_cipher(cpr, full_year)
 
 
 @pytest.mark.parametrize("gender", [Gender.male, Gender.female])
 def test_valid_random_last_cipher(gender: Gender) -> None:
     """Test valid partitions for generate_random_last_cipher."""
-    last_cipher = martin.generate_random_last_cipher(gender)
+    last_cipher = generate_random_last_cipher(gender)
     valid_ciphers = (
         constants.MALE_LAST_CIPHERS
         if gender == Gender.male
@@ -189,7 +197,7 @@ def test_valid_random_last_cipher(gender: Gender) -> None:
 @pytest.mark.parametrize("gender", [Gender.male, Gender.female, None, 0, ""])
 def test_invalid_random_last_cipher(gender: Gender) -> None:
     """Test invalid partitions for generate_random_last_cipher."""
-    last_cipher = martin.generate_random_last_cipher(gender)
+    last_cipher = generate_random_last_cipher(gender)
     invalid_ciphers = (
         constants.FEMALE_LAST_CIPHERS
         if gender == Gender.male
@@ -211,12 +219,12 @@ def test_invalid_random_last_cipher(gender: Gender) -> None:
 def test_valid_generate_cpr(date_of_birth: datetime, gender: Gender) -> None:
     """Test valid partitions for generate_cpr."""
 
-    cpr = martin.generate_cpr(date_of_birth, gender)
+    cpr = generate_cpr(date_of_birth, gender)
     cpr = cpr.replace("-", "")
 
-    assert martin.validate_gender_match(cpr, gender)
-    assert martin.validate_cpr_format(cpr)
-    assert martin.validate_seventh_cipher(cpr, str(date_of_birth.year))
+    assert validate_gender_match(cpr, gender)
+    assert validate_cpr_format(cpr)
+    assert validate_seventh_cipher(cpr, str(date_of_birth.year))
 
 
 @pytest.mark.parametrize(
@@ -236,4 +244,4 @@ def test_invalid_generate_cpr(date_of_birth: datetime, gender: Gender) -> None:
     """Test valid partitions for generate_cpr."""
 
     with pytest.raises(ValueError):
-        martin.generate_cpr(date_of_birth, gender)
+        generate_cpr(date_of_birth, gender)

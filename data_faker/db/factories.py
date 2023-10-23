@@ -5,9 +5,7 @@ import factory
 from faker import Faker
 from pydantic import BaseModel
 
-from data_faker import martin
-from data_faker import malthe
-from data_faker.db import mo_utils as utils
+from data_faker.db import utils as utils
 from data_faker.web.dtos.address_dto import AddressDTO
 from data_faker.web.dtos.fake_info_dto import FakeInfoDTO
 from data_faker.db.models.models import Address
@@ -50,10 +48,10 @@ class AddressFactory(BaseFactory[AddressDTO]):
     class Meta:
         model = AddressDTO
 
-    street = factory.LazyAttribute(lambda _: malthe.generate_valid_street())
-    number = factory.LazyAttribute(lambda _: malthe.generate_number())
+    street = factory.LazyAttribute(lambda _: utils.generate_valid_street())
+    number = factory.LazyAttribute(lambda _: utils.generate_number())
     door = factory.LazyAttribute(lambda _: utils.generate_door_value())  # Mo
-    floor = factory.LazyAttribute(lambda _: malthe.generate_floor())
+    floor = factory.LazyAttribute(lambda _: utils.generate_floor())
 
     @factory.lazy_attribute
     def town(self) -> str:
@@ -78,17 +76,17 @@ class FakeInfoFactory(BaseFactory[FakeInfoDTO]):
 
     person_info = factory.LazyAttribute(
         lambda _: random.choice(
-            malthe.extract_person_info("input_files/person-names.json")
+            utils.extract_person_info("input_files/person-names.json")
         ),
     )
     first_name = factory.LazyAttribute(lambda x: x.person_info.name)
     last_name = factory.LazyAttribute(lambda x: x.person_info.surname)
     gender = factory.LazyAttribute(lambda x: x.person_info.gender)
     date_of_birth = factory.LazyAttribute(
-        lambda _: martin.generate_random_date_of_birth()
-    )  # Martin
+        lambda _: utils.generate_random_date_of_birth()
+    )  # utils
     cpr = factory.LazyAttribute(
-        lambda x: martin.generate_cpr(x.date_of_birth, x.gender),
+        lambda x: utils.generate_cpr(x.date_of_birth, x.gender),
     )
     phone_number = factory.LazyAttribute(
         lambda _: utils.generate_valid_phone_number(),
