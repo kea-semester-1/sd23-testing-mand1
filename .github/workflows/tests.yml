@@ -74,33 +74,34 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
-          python-version: "3.11.3"
+          python-version: ${{ matrix.python }}
+      - name: Install Poetry
+        run: |
+          curl -sSL https://install.python-poetry.org | python -
       - name: Install deps
-        uses: knowsuchagency/poetry-install@v1
-        env:
-          POETRY_VIRTUALENVS_CREATE: false
-      - name: Run pytest check
-        run: poetry run pytest -vv --cov="data_faker" .
+        run: |
+          poetry install
+      - name: Run pytest and generate coverage report
+        run: poetry run pytest -vv --cov=data_faker --cov-report=xml:coverage.xml .
 
         env:
           DATA_FAKER_HOST: "0.0.0.0"
           DATA_FAKER_DB_HOST: localhost
+      - name: Publish coverage report to SonarCloud
+        uses: sonarsource/sonarcloud-github-action@master
+        with:
+          tokens: ${{ secrets.SONAR_TOKEN }}
+          projectBaseDir: .
+          extraProperties: |
+            sonar.python.coverage.reportPaths=coverage.xml
 
   sonarcloud:
     name: SonarCloud
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
-          fetch-depth: 0
-      - name: Setup Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: ${{ matrix.python }}
-      - name: Install tox and any other packages
-        run: pip install tox
-      - name: Run tox
-        run: tox -e py
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
         env:
