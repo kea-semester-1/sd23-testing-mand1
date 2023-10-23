@@ -53,6 +53,7 @@ async def test_address_dao_returning_valid_town_name(
         ("40AB2", False),
         (302, False),
         (40001, False),
+        (None, False),
     ],
 )
 def test_postal_code_validation(postal_code: int, expected: bool) -> None:
@@ -85,6 +86,7 @@ def test_postal_code_validation(postal_code: int, expected: bool) -> None:
         ("", False),
         # check for dash in town name
         ("Frederiksberg-C", False),
+        (None, False),
     ],
 )
 def test_is_valid_town_name(town_name: str, expected: bool) -> None:

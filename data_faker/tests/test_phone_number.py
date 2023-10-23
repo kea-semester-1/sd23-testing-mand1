@@ -1,112 +1,16 @@
 from data_faker.db.mo_utils import is_valid_phone_number
+from data_faker.constants import VALID_PHONE_PREFIXES
 import pytest
 
-valid_prefixes = [
-    "2",
-    "30",
-    "31",
-    "40",
-    "41",
-    "42",
-    "50",
-    "51",
-    "52",
-    "53",
-    "60",
-    "61",
-    "71",
-    "81",
-    "91",
-    "92",
-    "93",
-    "342",
-    "344",
-    "345",
-    "346",
-    "347",
-    "348",
-    "349",
-    "356",
-    "357",
-    "359",
-    "362",
-    "365",
-    "366",
-    "389",
-    "398",
-    "431",
-    "441",
-    "462",
-    "466",
-    "468",
-    "472",
-    "474",
-    "476",
-    "478",
-    "485",
-    "486",
-    "488",
-    "489",
-    "493",
-    "494",
-    "495",
-    "496",
-    "498",
-    "499",
-    "542",
-    "543",
-    "545",
-    "551",
-    "552",
-    "556",
-    "571",
-    "572",
-    "573",
-    "574",
-    "577",
-    "579",
-    "584",
-    "586",
-    "587",
-    "589",
-    "597",
-    "598",
-    "627",
-    "629",
-    "641",
-    "649",
-    "658",
-    "662",
-    "663",
-    "664",
-    "665",
-    "667",
-    "692",
-    "693",
-    "694",
-    "697",
-    "771",
-    "772",
-    "782",
-    "783",
-    "785",
-    "786",
-    "788",
-    "789",
-    "826",
-    "827",
-    "829",
-]
 
-
-@pytest.mark.parametrize("prefix", valid_prefixes)
+@pytest.mark.parametrize("prefix", VALID_PHONE_PREFIXES)
 def test_valid_phone_numbers_lower_boundary(prefix: list[str]) -> None:
     """Test a valid phone number for lower boundary partition."""
     number = str(prefix) + "0" * (8 - len(prefix))
     assert is_valid_phone_number(number)
 
 
-@pytest.mark.parametrize("prefix", valid_prefixes)
+@pytest.mark.parametrize("prefix", VALID_PHONE_PREFIXES)
 def test_valid_phone_numbers_upper_boundary(prefix: str) -> None:
     """Test a valid phone number for upper boundary partition."""
     number = prefix + "9" * (8 - len(prefix))
@@ -128,6 +32,7 @@ invalid_numbers = [
     "3000A000",
     # Numbers with leading zeroes
     "03000000",
+    None,  # if None
 ]
 
 
