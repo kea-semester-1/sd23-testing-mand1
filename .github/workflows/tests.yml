@@ -104,7 +104,7 @@ jobs:
       - name: Install tox and any other packages
         run: poetry add tox --dev
       - name: Run tox
-        run: poetry run tox -e py
+        run:  tox -e py
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
         env:
