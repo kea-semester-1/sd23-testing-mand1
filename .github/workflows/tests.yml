@@ -86,7 +86,7 @@ jobs:
           DATA_FAKER_HOST: "0.0.0.0"
           DATA_FAKER_DB_HOST: localhost
 
-  sonarcloud:
+sonarcloud:
     name: SonarCloud
     runs-on: ubuntu-latest
     needs: pytest
@@ -98,10 +98,13 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python }}
+      - name: Install Poetry
+        run: |
+          curl -sSL https://install.python-poetry.org | python -
       - name: Install tox and any other packages
-        run: pip install tox
+        run: poetry install tox
       - name: Run tox
-        run: tox -e py
+        run: poetry run tox -e py
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
         env:
