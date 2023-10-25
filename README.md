@@ -9,7 +9,7 @@
 This project is the first mandatory assignment, for the SD23 testing subject.
 
 ## Prerequisites
-* Docker
+* Docker desktop
 
 ## Commands
 
