@@ -1,4 +1,6 @@
 
+For identifying these test cases, we've sat down with the applications requirements specification and figured which values were valid or invalid. To design the test cases we have used the techniques learned from our classes, particularly Equivalence partitioning and Boundary Analysis. 
+
 #### First & Last name
 
 **Valid partitions:**
@@ -12,7 +14,7 @@
 4. **" Casper" (starting with a space)**
 5. **123512123 (only numeric values)**
 6. 珀ØΚάσ (Mixing language characters. Here we used danish, chinese & greek)
-8. 2. **Hebrew (Modern)**: כספר
+8. **Hebrew (Modern)**: כספר
 9. **Arabic**: كاسبر
 10. **Russian**: Каспер
 11. **Greek**: Κάσπερ
@@ -140,7 +142,7 @@
     - Example: "999"
 1. A number between 1 and 999 followed by an uppercase letter.
     - Example: "42B"
-    -  Example: "1A"
+    - Example: "1A"
     - Example: "999C"
 
 **Invalid Partitions:**
@@ -160,7 +162,7 @@
 2. A number between 1 and 99.
     - Example: "12"
     - Example: "1"
-    - Example:  "99"
+    - Example: "99"
 
 **Invalid Partitions:**
 
