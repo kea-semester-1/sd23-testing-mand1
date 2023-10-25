@@ -241,7 +241,7 @@ def test_valid_generate_cpr(date_of_birth: datetime, gender: Gender) -> None:
     ],
 )
 def test_invalid_generate_cpr(date_of_birth: datetime, gender: Gender) -> None:
-    """Test valid partitions for generate_cpr."""
+    """Test invalid partitions for generate_cpr."""
 
     with pytest.raises(ValueError):
         generate_cpr(date_of_birth, gender)
