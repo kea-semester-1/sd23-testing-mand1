@@ -1,5 +1,6 @@
 
 For identifying these test cases, we've sat down with the applications requirements specification and figured which values were valid or invalid. To design the test cases we have used the techniques learned from our classes, particularly Equivalence partitioning and Boundary Analysis. 
+Equivalence partitioning might not be as clear as it could have been in this document, however we are using technique in the code base. 
 
 #### First & Last name
 
