@@ -9,7 +9,7 @@ from data_faker.db import utils as utils
 async def test_address_dao_returning_correct_amount_of_rows(
     dbsession: AsyncSession, address_data: None
 ) -> None:
-    """Test for adr."""
+    """Test for getting random addresses."""
 
     amount_of_rows = 10
     address_dao = AddressDAO(dbsession)
