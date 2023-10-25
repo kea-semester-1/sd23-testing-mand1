@@ -3,16 +3,7 @@
 
 **Valid partitions:**
 1. **English**: Casper
-2. **Hebrew (Modern)**: כספר
-3. **Arabic**: كاسبر
-4. **Russian**: Каспер
-5. **Greek**: Κάσπερ
-6. **Chinese**: 卡斯珀
-7. **Japanese (Katakana)**: カスパー
-8. **Korean (Hangul)**: 카스퍼
-9. **Hindi (Transliteration)**: कैस्पर
-10. **Persian (Farsi)**: کاسپر
-11. **Danish**: Øjvind
+12. **Danish**: Øjvind
 
 **Invalid partitions**
 1. **Casper1 (including a numeric value)**
@@ -21,6 +12,15 @@
 4. **" Casper" (starting with a space)**
 5. **123512123 (only numeric values)**
 6. 珀ØΚάσ (Mixing language characters. Here we used danish, chinese & greek)
+8. 2. **Hebrew (Modern)**: כספר
+9. **Arabic**: كاسبر
+10. **Russian**: Каспер
+11. **Greek**: Κάσπερ
+12. **Chinese**: 卡斯珀
+13. **Japanese (Katakana)**: カスパー
+14. **Korean (Hangul)**: 카스퍼
+15. **Hindi (Transliteration)**: कैस्पर
+16. **Persian (Farsi)**: کاسپر
 
 #### Gender
 
