@@ -8,8 +8,15 @@
 
 This project is the first mandatory assignment, for the SD23 testing subject.
 
+## Prerequisites
+* Docker desktop
+
 ## Commands
 
 * `make run` -> Run the application
 * `make test` -> Run the tests
 * `make lint` -> Run the linters
+
+If `make` does not work for you, you can copy paste the commands from the `Makefile`.
+
+`make run` = `docker-compose -f deploy/docker-compose.yml -f deploy/docker-compose.dev.yml --project-directory . up --build`
