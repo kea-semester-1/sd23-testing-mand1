@@ -18,7 +18,7 @@ async def test_get_batch(client: AsyncClient, address_data: Any) -> None:
 async def test_get_batch_with_embeds(client: AsyncClient, address_data: Any) -> None:
     """Test getting a batch of faked person data with embeds: 200."""
 
-    embed_params = {
+    params = {
         "size": 3,
         "gender": True,
         "cpr": True,
@@ -27,7 +27,7 @@ async def test_get_batch_with_embeds(client: AsyncClient, address_data: Any) -> 
 
     response = await client.get(
         URL,
-        params=embed_params,
+        params=params,
     )
     assert response.status_code == 200
     response_json = response.json()
@@ -49,7 +49,7 @@ async def test_get_batch_with_embeds_address(
 ) -> None:
     """Test getting a batch of data with address attribute embedded: 200."""
 
-    embed_params = {
+    params = {
         "size": 3,
         "gender": False,
         "street": True,
@@ -60,7 +60,7 @@ async def test_get_batch_with_embeds_address(
 
     response = await client.get(
         URL,
-        params=embed_params,
+        params=params,
     )
     assert response.status_code == 200
     response_json = response.json()
